@@ -8,15 +8,13 @@
 
 /* ===========================
    STARFIELD — twinkling stars
-   on all pages via fixed canvas
+   Three tiers: ambient, mid, bright
    =========================== */
 (function initStarfield() {
     const canvas = document.getElementById('starfield');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    const NUM_STARS = 240;
-    const NUM_NEBULAE = 7;
     let stars = [];
     let nebulae = [];
 
@@ -31,13 +29,13 @@
     ];
 
     const NEBULA_PALETTE = [
-        { r: 138, g: 53, b: 232, a: 0.030 },  // purple
-        { r: 224, g: 104, b: 40, a: 0.022 },  // orange
-        { r: 200, g: 64, b: 168, a: 0.020 },  // pink
-        { r: 62, g: 20, b: 112, a: 0.035 },  // deep purple
-        { r: 80, g: 30, b: 180, a: 0.025 },  // indigo
-        { r: 138, g: 53, b: 232, a: 0.018 },  // purple soft
-        { r: 224, g: 104, b: 40, a: 0.018 },  // orange soft
+        { r: 138, g: 53, b: 232, a: 0.030 },
+        { r: 224, g: 104, b: 40, a: 0.022 },
+        { r: 200, g: 64, b: 168, a: 0.020 },
+        { r: 62, g: 20, b: 112, a: 0.035 },
+        { r: 80, g: 30, b: 180, a: 0.025 },
+        { r: 138, g: 53, b: 232, a: 0.018 },
+        { r: 224, g: 104, b: 40, a: 0.018 },
     ];
 
     function resize() {
@@ -48,18 +46,55 @@
     }
 
     function buildStars() {
-        stars = Array.from({ length: NUM_STARS }, () => {
+        stars = [];
+
+        // Tier 1 — AMBIENT: many small, slow, subtle
+        for (let i = 0; i < 160; i++) {
             const [r, g, b] = STAR_PALETTE[Math.floor(Math.random() * STAR_PALETTE.length)];
-            return {
+            stars.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.2,
-                base: Math.random() * 0.65 + 0.1,
+                radius: Math.random() * 0.8 + 0.2,
+                minAlpha: 0.05,
+                maxAlpha: 0.45,
                 phase: Math.random() * Math.PI * 2,
-                speed: Math.random() * 0.016 + 0.004,
+                speed: Math.random() * 0.008 + 0.003,
+                tier: 'ambient',
                 r, g, b,
-            };
-        });
+            });
+        }
+
+        // Tier 2 — MID: moderate size, noticeable twinkle
+        for (let i = 0; i < 60; i++) {
+            const [r, g, b] = STAR_PALETTE[Math.floor(Math.random() * STAR_PALETTE.length)];
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 0.9 + 0.9,
+                minAlpha: 0.1,
+                maxAlpha: 0.85,
+                phase: Math.random() * Math.PI * 2,
+                speed: Math.random() * 0.018 + 0.008,
+                tier: 'mid',
+                r, g, b,
+            });
+        }
+
+        // Tier 3 — BRIGHT: few large stars, dramatic pulse + bloom
+        for (let i = 0; i < 18; i++) {
+            const [r, g, b] = STAR_PALETTE[Math.floor(Math.random() * STAR_PALETTE.length)];
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.2 + 1.4,
+                minAlpha: 0.05,
+                maxAlpha: 1.0,
+                phase: Math.random() * Math.PI * 2,
+                speed: Math.random() * 0.025 + 0.012,
+                tier: 'bright',
+                r, g, b,
+            });
+        }
     }
 
     function buildNebulae() {
@@ -88,24 +123,55 @@
         // Stars
         stars.forEach(s => {
             s.phase += s.speed;
-            const twinkle = (Math.sin(s.phase) + 1) * 0.5;
-            const alpha = s.base * 0.3 + twinkle * s.base * 0.7;
+            // Use squared sine for a sharper "flash" rather than a smooth fade
+            const t = (Math.sin(s.phase) + 1) * 0.5;
+            const sharp = s.tier === 'bright' ? t * t : t;
+            const alpha = s.minAlpha + sharp * (s.maxAlpha - s.minAlpha);
 
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${s.r},${s.g},${s.b},${alpha})`;
-            ctx.fill();
+            if (s.tier === 'bright' && alpha > 0.4) {
+                // Bloom: soft radial glow behind the star
+                const bloomR = s.radius * 5;
+                const bloom = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, bloomR);
+                bloom.addColorStop(0, `rgba(${s.r},${s.g},${s.b},${alpha * 0.35})`);
+                bloom.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, bloomR, 0, Math.PI * 2);
+                ctx.fillStyle = bloom;
+                ctx.fill();
 
-            // Cross-sparkle for larger stars
-            if (s.radius > 1.1) {
-                const arm = s.radius * 4;
-                ctx.strokeStyle = `rgba(${s.r},${s.g},${s.b},${alpha * 0.35})`;
+                // Four-point cross sparkle
+                const arm = s.radius * (3 + sharp * 5);
+                ctx.strokeStyle = `rgba(${s.r},${s.g},${s.b},${alpha * 0.6})`;
+                ctx.lineWidth = 0.7;
+                ctx.beginPath();
+                ctx.moveTo(s.x - arm, s.y); ctx.lineTo(s.x + arm, s.y);
+                ctx.moveTo(s.x, s.y - arm); ctx.lineTo(s.x, s.y + arm);
+                ctx.stroke();
+
+                // Diagonal arms (softer)
+                const dArm = arm * 0.5;
+                ctx.strokeStyle = `rgba(${s.r},${s.g},${s.b},${alpha * 0.25})`;
+                ctx.beginPath();
+                ctx.moveTo(s.x - dArm, s.y - dArm); ctx.lineTo(s.x + dArm, s.y + dArm);
+                ctx.moveTo(s.x + dArm, s.y - dArm); ctx.lineTo(s.x - dArm, s.y + dArm);
+                ctx.stroke();
+
+            } else if (s.tier === 'mid' && alpha > 0.5) {
+                // Simple cross on bright mid-stars
+                const arm = s.radius * 3;
+                ctx.strokeStyle = `rgba(${s.r},${s.g},${s.b},${alpha * 0.4})`;
                 ctx.lineWidth = 0.5;
                 ctx.beginPath();
                 ctx.moveTo(s.x - arm, s.y); ctx.lineTo(s.x + arm, s.y);
                 ctx.moveTo(s.x, s.y - arm); ctx.lineTo(s.x, s.y + arm);
                 ctx.stroke();
             }
+
+            // Star dot
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${s.r},${s.g},${s.b},${alpha})`;
+            ctx.fill();
         });
 
         requestAnimationFrame(draw);
