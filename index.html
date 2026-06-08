@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roy M. Kerns — Hymns of the Hadrian Quadrant</title>
+    <meta name="description" content="Roy M. Kerns is the author of the Xerxes Trilogy — sci-fi set within the Hymns of the Hadrian Quadrant universe.">
+    <meta name="theme-color" content="#05050A">
+
+    <meta property="og:title" content="Roy M. Kerns — Hymns of the Hadrian Quadrant">
+    <meta property="og:description" content="Author of the Xerxes Trilogy.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://roykerns.vercel.app">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets — relative paths work locally AND on Vercel -->
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        /* ── STRIP SECTION ── */
+        .strip {
+            padding-block: 5rem;
+            border-top: 1px solid var(--border-sub);
+        }
+
+        .strip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-sub);
+            border: 1px solid var(--border-sub);
+        }
+
+        .strip-card {
+            background: var(--bg);
+            padding: 2rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            transition: background var(--t-med) ease;
+            text-decoration: none;
+        }
+
+            .strip-card:hover {
+                background: var(--bg-surface);
+            }
+
+        .strip-card__label {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            color: var(--text);
+            transition: color var(--t-fast) ease;
+        }
+
+        .strip-card:hover .strip-card__label {
+            color: var(--purple-light);
+        }
+
+        .strip-card__desc {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            flex: 1;
+        }
+
+        .strip-card__arrow {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+            transition: color var(--t-fast) ease, transform var(--t-fast) ease;
+            display: inline-block;
+        }
+
+        .strip-card:hover .strip-card__arrow {
+            color: var(--orange);
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 900px) {
+            .strip-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .strip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── FEATURED BOOK SECTION ── */
+        .featured-book {
+            padding-block: 6rem;
+            border-top: 1px solid var(--border-sub);
+        }
+
+        .featured-book__inner {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .featured-book__cover .cover-placeholder {
+            aspect-ratio: 2 / 3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-book__cover .cover-placeholder__inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 860px) {
+            .featured-book__inner {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .featured-book__cover {
+                max-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="html/trilogy.html">Trilogy</a></li>
+                <li><a href="html/portfolio.html">Portfolio</a></li>
+                <li><a href="html/blog.html">Blog</a></li>
+                <li><a href="html/about.html">About</a></li>
+                <li><a href="html/contact.html">Contact</a></li>
+            </ul>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero" aria-label="Hero">
+            <div class="hero-content">
+                <p class="hero-universe">Hymns of the Hadrian Quadrant</p>
+
+                <h1 class="hero-title">
+                    Roy M.<br>
+                    <span>Kerns</span>
+                </h1>
+
+                <p class="hero-subtitle">The Xerxes Trilogy</p>
+                <p class="hero-by">Author &mdash; Sci-Fi &mdash; Book One Now Available</p>
+
+                <div class="hero-cta-group">
+                    <a href="html/trilogy.html" class="btn-primary">Explore the Xerxes Trilogy</a>
+                    <a href="html/about.html" class="btn-ghost">About the Author</a>
+                </div>
+            </div>
+
+            <div class="hero-decoration" aria-hidden="true">
+                <div class="orbit-center"></div>
+                <div class="orbit-ring ring-1"></div>
+                <div class="orbit-ring ring-2"></div>
+                <div class="orbit-ring ring-3"></div>
+            </div>
+        </section>
+
+        <!-- STRIP -->
+        <section class="strip" aria-label="Site sections">
+            <div class="container">
+                <div class="strip-grid">
+                    <a href="html/trilogy.html" class="strip-card reveal">
+                        <span class="strip-card__label">The Xerxes Trilogy</span>
+                        <p class="strip-card__desc">Three books. One universe. The story of the Azar.</p>
+                        <span class="strip-card__arrow">→</span>
+                    </a>
+                    <a href="html/portfolio.html" class="strip-card reveal reveal-delay-1">
+                        <span class="strip-card__label">Portfolio</span>
+                        <p class="strip-card__desc">Art, characters, and behind-the-scenes content.</p>
+                        <span class="strip-card__arrow">→</span>
+                    </a>
+                    <a href="html/blog.html" class="strip-card reveal reveal-delay-2">
+                        <span class="strip-card__label">Blog</span>
+                        <p class="strip-card__desc">Writing updates, worldbuilding notes, and more.</p>
+                        <span class="strip-card__arrow">→</span>
+                    </a>
+                    <a href="html/about.html" class="strip-card reveal reveal-delay-3">
+                        <span class="strip-card__label">About Roy</span>
+                        <p class="strip-card__desc">The author behind the Hadrian Quadrant.</p>
+                        <span class="strip-card__arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED BOOK -->
+        <section class="featured-book" aria-label="Featured book">
+            <div class="container">
+                <div class="featured-book__inner reveal">
+                    <div class="featured-book__text">
+                        <span class="section-label">Now Available — Book One</span>
+                        <h2 class="section-title">The Azar Project</h2>
+                        <div class="title-line"></div>
+                        <div class="blurb" style="margin-top: 2rem;">
+                            <p>From the void emerges the USS Azar — a relic of an unknown Cataclysm that wiped out many of humanity's interstellar colonies. Its timely arrival brings a glimmer of hope to Dr. Mayakannan and her crew aboard Xerxes Station.</p>
+                            <p class="blurb-hook">A chance for humanity's future, but only if it doesn't tear them apart first.</p>
+                        </div>
+                        <div style="margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="html/azar.html" class="btn-primary">Read More</a>
+                            <a href="html/azar.html#retailers" class="btn-ghost">Where to Buy</a>
+                        </div>
+                    </div>
+                    <div class="featured-book__cover">
+                        <div class="cover-placeholder">
+                            <div class="cover-placeholder__inner">
+                                <span class="cover-placeholder__icon">&#9670;</span>
+                                <span class="cover-placeholder__label">Cover Art</span>
+                                <span class="cover-placeholder__sub">The Azar Project</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color: var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link"
+                   target="_blank" rel="noopener noreferrer"
+                   role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link"
+                   target="_blank" rel="noopener noreferrer"
+                   role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script — relative path -->
+    <script src="js/script.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
