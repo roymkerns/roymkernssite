@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — Roy M. Kerns</title>
+    <meta name="description" content="Roy M. Kerns is the author of The Azar Project and the Xerxes Trilogy, set within the Hymns of the Hadrian Quadrant universe.">
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ── PAGE SPACING ── */
+        .about-page {
+            padding-block: calc(var(--nav-h) + 4rem) 8rem;
+        }
+
+        /* ── ILLUSTRATION PLACEHOLDER ── */
+        .author-photo-placeholder {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+        }
+
+            .author-photo-placeholder::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(160deg, rgba(138, 53, 232, 0.07) 0%, transparent 60%);
+                pointer-events: none;
+            }
+
+        .author-photo-placeholder__inner {
+            gap: 1.25rem;
+            color: var(--text-dim);
+        }
+
+        .portrait-icon {
+            width: 80px;
+            height: 80px;
+            opacity: 0.35;
+        }
+
+        .portrait-label {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* ── BIO COLUMN ── */
+        .bio-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Page eyebrow */
+        .about-eyebrow {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.42em;
+            color: var(--orange);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Author name heading */
+        .about-name {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            letter-spacing: 0.04em;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .about-universe {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-style: italic;
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+        }
+
+        /* Divider */
+        .about-divider {
+            width: 52px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--purple), transparent);
+            margin-bottom: 2.5rem;
+        }
+
+        /* Bio paragraphs */
+        .bio-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            margin-bottom: 2.5rem;
+        }
+
+            .bio-body p {
+                font-family: var(--font-body);
+                font-size: 1rem;
+                line-height: 1.95;
+                color: var(--text-muted);
+            }
+
+                .bio-body p.bio-lead {
+                    font-size: 1.08rem;
+                    color: var(--text);
+                    line-height: 1.9;
+                }
+
+            .bio-body em {
+                font-style: italic;
+                color: var(--orange-light);
+            }
+
+        /* ── CURRENTLY WORKING ON ── */
+        .bio-status {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            border-left: 2px solid var(--purple);
+            margin-bottom: 2.5rem;
+        }
+
+        .bio-status__dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--purple-light);
+            box-shadow: var(--glow-purple);
+            flex-shrink: 0;
+            margin-top: 0.35rem;
+            animation: pulseDot 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+        }
+
+        .bio-status__text {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+            .bio-status__text span {
+                color: var(--text);
+            }
+
+        /* ── SOCIAL LINKS ── */
+        .about-social {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding-top: 1.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .about-social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.25s ease;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+            .about-social-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 1px;
+                background: var(--purple-light);
+                transition: width 0.3s ease;
+            }
+
+            .about-social-link:hover {
+                color: var(--purple-light);
+            }
+
+                .about-social-link:hover::after {
+                    width: 100%;
+                }
+
+        /* ── BOOK CREDIT STRIP ── */
+        .book-credit {
+            margin-top: 5rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-sub);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-credit__item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .book-credit__label {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.32em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .book-credit__value {
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+            .book-credit__value a {
+                color: var(--purple-light);
+                text-decoration: underline;
+                text-decoration-color: rgba(178,107,255,0.3);
+                transition: text-decoration-color 0.2s ease;
+            }
+
+                .book-credit__value a:hover {
+                    text-decoration-color: var(--purple-light);
+                }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 960px) {
+            .about-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .author-photo-placeholder {
+                max-width: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="../index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="trilogy.html">Trilogy</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="about-page">
+
+                <!-- TWO-COLUMN LAYOUT -->
+                <div class="about-layout reveal">
+
+                    <!-- LEFT: SELF ILLUSTRATION -->
+                    <div>
+                        <div class="author-photo-placeholder">
+                            <!--
+                                TO ADD ILLUSTRATION:
+                                Replace this entire div with:
+                                <img class="author-photo"
+                                     src="../assets/roy-illustration.jpg"
+                                     alt="Roy M. Kerns — self portrait illustration">
+                            -->
+                            <div class="author-photo-placeholder__inner">
+                                <svg class="portrait-icon" viewBox="0 0 100 110"
+                                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                     fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <circle cx="50" cy="36" r="22" stroke-dasharray="4 3" />
+                                    <path d="M8 100 Q8 68 50 68 Q92 68 92 100" />
+                                    <!-- Small palette hint for illustration placeholder -->
+                                    <circle cx="50" cy="36" r="8" opacity="0.3" />
+                                    <line x1="34" y1="90" x2="34" y2="78" opacity="0.4" />
+                                    <line x1="66" y1="90" x2="66" y2="78" opacity="0.4" />
+                                </svg>
+                                <span class="portrait-label">
+                                    Self Portrait<br>Illustration
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: BIO -->
+                    <div class="bio-wrap">
+
+                        <span class="about-eyebrow">The Author</span>
+                        <h1 class="about-name">Roy M. Kerns</h1>
+                        <p class="about-universe">Hymns of the Hadrian Quadrant</p>
+                        <div class="about-divider"></div>
+
+                        <div class="bio-body">
+
+                            <p class="bio-lead">
+                                Roy M. Kerns is the author of <em>The Azar Project</em>,
+                                the first installment in an ongoing sci-fi trilogy that spans
+                                millennia, star systems, and the fragile threads that hold
+                                humanity together against the dark.
+                            </p>
+
+                            <p>
+                                Set thousands of years in the future, Roy's debut novel follows
+                                Dr. Mayakannan — a scientist forced to choose between compliance
+                                and catastrophe at the edge of known space — and the haunted crew
+                                she has to hold together to do it.
+                            </p>
+
+                            <p>
+                                <!--
+                                    REPLACE THIS PARAGRAPH with the actual author bio
+                                    from the back matter of The Azar Project.
+                                    Remove this comment block once updated.
+                                -->
+                                [ Replace with bio from the end of <em>The Azar Project</em>. ]
+                            </p>
+
+                        </div>
+
+                        <!-- Currently working on -->
+                        <div class="bio-status">
+                            <div class="bio-status__dot" aria-hidden="true"></div>
+                            <p class="bio-status__text">
+                                Currently writing — <span>The Karava Initiative</span>,
+                                Book Two of the Xerxes Trilogy.
+                            </p>
+                        </div>
+
+                        <!-- Social links -->
+                        <div class="about-social" role="list">
+                            <a href="https://www.tiktok.com/@YOURHANDLE"
+                               class="about-social-link"
+                               target="_blank" rel="noopener noreferrer"
+                               role="listitem">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                                </svg>
+                                TikTok
+                            </a>
+                            <a href="https://www.instagram.com/YOURHANDLE"
+                               class="about-social-link"
+                               target="_blank" rel="noopener noreferrer"
+                               role="listitem">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                    <circle cx="12" cy="12" r="4" />
+                                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                                </svg>
+                                Instagram
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- BOOK CREDIT STRIP -->
+                <div class="book-credit reveal">
+                    <div class="book-credit__item">
+                        <span class="book-credit__label">Debut Novel</span>
+                        <span class="book-credit__value">
+                            <a href="azar.html">The Azar Project</a>
+                        </span>
+                    </div>
+                    <div class="book-credit__item">
+                        <span class="book-credit__label">Series</span>
+                        <span class="book-credit__value">
+                            <a href="trilogy.html">The Xerxes Trilogy</a>
+                        </span>
+                    </div>
+                    <div class="book-credit__item">
+                        <span class="book-credit__label">Universe</span>
+                        <span class="book-credit__value">Hymns of the Hadrian Quadrant</span>
+                    </div>
+                    <div class="book-credit__item">
+                        <span class="book-credit__label">In-Universe Date</span>
+                        <span class="book-credit__value">6 February 4007</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color:var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>

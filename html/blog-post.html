@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading post… — Roy M. Kerns</title>
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ── POST LAYOUT ── */
+        .post-wrapper {
+            max-width: 740px;
+            margin-inline: auto;
+            padding-inline: var(--gutter);
+            padding-block: calc(var(--nav-h) + 4rem) 7rem;
+        }
+
+        /* ── BACK LINK ── */
+        .post-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.22em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-bottom: 3rem;
+            transition: color 0.25s ease;
+        }
+
+            .post-back:hover {
+                color: var(--purple-light);
+            }
+
+            .post-back svg {
+                transition: transform 0.25s ease;
+            }
+
+            .post-back:hover svg {
+                transform: translateX(-3px);
+            }
+
+        /* ── POST HEADER ── */
+        .post-header {
+            margin-bottom: 3rem;
+        }
+
+        .post-category {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.38em;
+            color: var(--orange);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .post-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4.5vw, 3rem);
+            letter-spacing: 0.03em;
+            color: var(--text);
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.22em;
+            color: var(--text-dim);
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-sub);
+        }
+
+        .post-meta__sep {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-dim);
+        }
+
+        /* ── COVER IMAGE ── */
+        .post-cover {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-sub);
+        }
+
+        /* ── POST BODY ── */
+        .post-body {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            line-height: 1.95;
+            color: var(--text-muted);
+        }
+
+            .post-body p {
+                margin-bottom: 1.5rem;
+            }
+
+                .post-body p:last-child {
+                    margin-bottom: 0;
+                }
+
+            .post-body h2 {
+                font-family: var(--font-display);
+                font-size: 1.5rem;
+                letter-spacing: 0.04em;
+                color: var(--text);
+                margin-top: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .post-body h3 {
+                font-family: var(--font-display);
+                font-size: 1.15rem;
+                letter-spacing: 0.04em;
+                color: var(--text);
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .post-body a {
+                color: var(--purple-light);
+                text-decoration: underline;
+                text-decoration-color: rgba(178,107,255,0.35);
+                transition: text-decoration-color 0.2s ease;
+            }
+
+                .post-body a:hover {
+                    text-decoration-color: var(--purple-light);
+                }
+
+            .post-body blockquote {
+                border-left: 2px solid var(--orange);
+                padding-left: 1.5rem;
+                margin-block: 2rem;
+                font-style: italic;
+                color: var(--text);
+                box-shadow: -2px 0 14px rgba(224,104,40,0.15);
+            }
+
+            .post-body ul,
+            .post-body ol {
+                padding-left: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .post-body ul {
+                list-style: disc;
+            }
+
+            .post-body ol {
+                list-style: decimal;
+            }
+
+            .post-body li {
+                margin-bottom: 0.5rem;
+                line-height: 1.8;
+            }
+
+            .post-body img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin-block: 2rem;
+                border: 1px solid var(--border-sub);
+            }
+
+            .post-body hr {
+                border: none;
+                border-top: 1px solid var(--border-sub);
+                margin-block: 3rem;
+            }
+
+            .post-body strong {
+                font-family: var(--font-display);
+                color: var(--text);
+                font-weight: 400;
+            }
+
+            .post-body em {
+                font-style: italic;
+                color: var(--orange-light);
+            }
+
+        /* ── FOOTER DIVIDER ── */
+        .post-footer {
+            margin-top: 5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--border-sub);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .post-footer__label {
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* ── SKELETON ── */
+        .post-skeleton {
+            animation: none;
+        }
+
+        .skel {
+            background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+            border-radius: 2px;
+        }
+
+        .skel-title {
+            height: 2.8rem;
+            width: 75%;
+            margin-bottom: 1rem;
+        }
+
+        .skel-meta {
+            height: 0.65rem;
+            width: 45%;
+            margin-bottom: 2.5rem;
+        }
+
+        .skel-cover {
+            width: 100%;
+            aspect-ratio: 16/9;
+            margin-bottom: 3rem;
+        }
+
+        .skel-p {
+            height: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .skel-p--full {
+            width: 100%;
+        }
+
+        .skel-p--long {
+            width: 88%;
+        }
+
+        .skel-p--med {
+            width: 72%;
+        }
+
+        .skel-p--short {
+            width: 50%;
+        }
+
+        @keyframes shimmer {
+            from {
+                background-position: -200% 0;
+            }
+
+            to {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ── NOT FOUND / ERROR ── */
+        .post-not-found {
+            text-align: center;
+            padding-block: 6rem;
+        }
+
+        .post-not-found__icon {
+            font-size: 3rem;
+            opacity: 0.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-not-found__title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .post-not-found__body {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            font-style: italic;
+            margin-bottom: 2.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="../index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="trilogy.html">Trilogy</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="post-wrapper" id="postWrapper">
+
+            <!-- Back link -->
+            <a href="blog.html" class="post-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                All Posts
+            </a>
+
+            <!-- Skeleton while loading -->
+            <div id="postSkeleton">
+                <div class="skel skel-title"></div>
+                <div class="skel skel-meta"></div>
+                <div class="skel skel-cover"></div>
+                <div class="skel skel-p skel-p--full"></div>
+                <div class="skel skel-p skel-p--long"></div>
+                <div class="skel skel-p skel-p--full"></div>
+                <div class="skel skel-p skel-p--med"></div>
+                <div class="skel skel-p skel-p--full"></div>
+                <div class="skel skel-p skel-p--long"></div>
+                <div class="skel skel-p skel-p--short"></div>
+            </div>
+
+            <!-- Post content (populated by JS) -->
+            <article id="postContent" hidden></article>
+
+            <!-- Not found / error (populated by JS) -->
+            <div id="postError" hidden></div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color:var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import {
+            doc, getDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const skeleton   = document.getElementById('postSkeleton');
+        const content    = document.getElementById('postContent');
+        const errorEl    = document.getElementById('postError');
+
+        /* ── GET POST ID FROM URL ── */
+        const postId = new URLSearchParams(window.location.search).get('id');
+
+        async function loadPost() {
+            if (!postId) {
+                showNotFound('No post ID in URL.', true);
+                return;
+            }
+
+            try {
+                const snap = await getDoc(doc(db, 'blog', postId));
+
+                if (!snap.exists() || snap.data().published === false) {
+                    showNotFound('This post doesn\'t exist or hasn\'t been published yet.');
+                    return;
+                }
+
+                renderPost({ id: snap.id, ...snap.data() });
+
+            } catch (err) {
+                console.error('Post fetch error:', err);
+                showNotFound('There was a problem loading this post. Try refreshing.', false, true);
+            }
+        }
+
+        /* ── RENDER POST ── */
+        function renderPost(post) {
+            const date     = window.RKUtils?.formatDate(post.createdAt) || '';
+            const readTime = estimateReadTime(post.content || '');
+
+            // Update page title + meta
+            document.title = `${post.title || 'Post'} — Roy M. Kerns`;
+
+            // Build HTML
+            content.innerHTML = `
+                <header class="post-header">
+                    ${post.category
+                        ? `<span class="post-category">${post.category}</span>`
+                        : ''}
+                    <h1 class="post-title">${post.title || 'Untitled'}</h1>
+                    <div class="post-meta">
+                        ${date ? `<span>${date}</span>` : ''}
+                        ${date && readTime ? `<span class="post-meta__sep"></span>` : ''}
+                        ${readTime ? `<span>${readTime}</span>` : ''}
+                        ${post.category
+                            ? `<span class="post-meta__sep"></span>
+                               <span>${post.category}</span>`
+                            : ''}
+                    </div>
+                </header>
+
+                ${post.coverImageUrl
+                    ? `<img class="post-cover"
+                            src="${post.coverImageUrl}"
+                            alt="${post.title || 'Post cover image'}">`
+                    : ''}
+
+                <div class="post-body">
+                    ${post.content || '<p>No content yet.</p>'}
+                </div>
+
+                <footer class="post-footer">
+                    <a href="blog.html" class="post-back" style="margin-bottom:0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Back to Blog
+                    </a>
+                    <span class="post-footer__label">Roy M. Kerns &mdash; Hymns of the Hadrian Quadrant</span>
+                </footer>
+            `;
+
+            skeleton.hidden = true;
+            content.hidden  = false;
+        }
+
+        /* ── NOT FOUND / ERROR ── */
+        function showNotFound(msg = '', isRedirect = false, isError = false) {
+            skeleton.hidden = true;
+
+            errorEl.innerHTML = `
+                <div class="post-not-found">
+                    <div class="post-not-found__icon">${isError ? '⚠' : '◇'}</div>
+                    <h1 class="post-not-found__title">
+                        ${isError ? 'Something went wrong' : 'Post not found'}
+                    </h1>
+                    <p class="post-not-found__body">${msg}</p>
+                    <a href="blog.html" class="btn-primary">Back to Blog</a>
+                </div>`;
+
+            errorEl.hidden = false;
+
+            if (isRedirect) {
+                document.title = 'Post Not Found — Roy M. Kerns';
+            }
+        }
+
+        /* ── UTILITY ── */
+        function estimateReadTime(html) {
+            const text  = html.replace(/<[^>]*>/g, '');
+            const words = text.trim().split(/\s+/).length;
+            const mins  = Math.max(1, Math.round(words / 200));
+            return `${mins} min read`;
+        }
+
+        /* ── INIT ── */
+        document.getElementById('year').textContent = new Date().getFullYear();
+        loadPost();
+    </script>
+
+</body>
+</html>

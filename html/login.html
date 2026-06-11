@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Login — Roy M. Kerns</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ── LOGIN PAGE LAYOUT ── */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .login-page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* ── LOGIN CARD ── */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Top brand strip */
+        .login-brand {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-brand__universe {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.38em;
+            color: var(--orange);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .login-brand__name {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            letter-spacing: 0.16em;
+            color: var(--text);
+            display: block;
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+            .login-brand__name:hover {
+                color: var(--purple-light);
+            }
+
+        /* Card body */
+        .login-form-wrap {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            /* Subtle corner accent */
+            .login-form-wrap::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(225deg, rgba(138,53,232,0.12), transparent);
+                pointer-events: none;
+            }
+
+        .login-heading {
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            letter-spacing: 0.3em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .login-heading::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border-sub);
+            }
+
+        /* Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+            .login-form .form-group label {
+                font-family: var(--font-display);
+                font-size: 0.58rem;
+                letter-spacing: 0.3em;
+                color: var(--text-dim);
+                text-transform: uppercase;
+            }
+
+            .login-form .form-group input {
+                background: var(--bg);
+                border: 1px solid var(--text-dim);
+                color: var(--text);
+                font-family: var(--font-body);
+                font-size: 0.95rem;
+                padding: 0.85rem 1rem;
+                width: 100%;
+                transition: border-color 0.25s ease, box-shadow 0.25s ease;
+            }
+
+                .login-form .form-group input:focus {
+                    border-color: var(--purple);
+                    box-shadow: 0 0 0 2px rgba(138,53,232,0.12);
+                }
+
+                .login-form .form-group input.error {
+                    border-color: var(--orange);
+                }
+
+        /* Submit button — full width */
+        .login-btn {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            padding: 0.9rem;
+            background: var(--purple);
+            color: var(--text);
+            border: 1px solid var(--purple);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+            .login-btn::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+                transform: translateX(-100%);
+                transition: transform 0.5s ease;
+            }
+
+            .login-btn:hover:not(:disabled) {
+                background: var(--purple-light);
+                border-color: var(--purple-light);
+                box-shadow: var(--glow-purple);
+            }
+
+                .login-btn:hover:not(:disabled)::before {
+                    transform: translateX(100%);
+                }
+
+            .login-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        /* ── ERROR BANNER ── */
+        .login-error {
+            display: none;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            background: rgba(224,104,40,0.08);
+            border: 1px solid rgba(224,104,40,0.35);
+            margin-bottom: 0.25rem;
+        }
+
+            .login-error.visible {
+                display: flex;
+            }
+
+        .login-error__icon {
+            font-size: 0.9rem;
+            color: var(--orange);
+            flex-shrink: 0;
+            margin-top: 0.05rem;
+        }
+
+        .login-error__text {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--orange-light);
+            line-height: 1.5;
+        }
+
+        /* ── FORGOT PASSWORD ── */
+        .login-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .forgot-link {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.25s ease;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: transparent;
+            transition: color 0.25s ease, text-decoration-color 0.25s ease;
+        }
+
+            .forgot-link:hover {
+                color: var(--purple-light);
+                text-decoration-color: var(--purple-light);
+            }
+
+        /* ── RESET CONFIRMATION ── */
+        .reset-confirm {
+            display: none;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            background: rgba(138,53,232,0.08);
+            border: 1px solid var(--border);
+            margin-top: 0.75rem;
+        }
+
+            .reset-confirm.visible {
+                display: block;
+            }
+
+            .reset-confirm p {
+                font-family: var(--font-body);
+                font-size: 0.82rem;
+                color: var(--text-muted);
+                font-style: italic;
+                line-height: 1.6;
+            }
+
+        /* ── BACK LINK ── */
+        .login-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.22em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-top: 1.75rem;
+            transition: color 0.25s ease;
+            justify-content: center;
+            width: 100%;
+        }
+
+            .login-back:hover {
+                color: var(--text-muted);
+            }
+
+            .login-back svg {
+                transition: transform 0.25s ease;
+            }
+
+            .login-back:hover svg {
+                transform: translateX(-3px);
+            }
+
+        /* ── LOADING SPINNER ── */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-top-color: var(--text);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <main class="login-page">
+        <div class="login-card">
+
+            <!-- Brand -->
+            <div class="login-brand">
+                <span class="login-brand__universe">Hymns of the Hadrian Quadrant</span>
+                <a href="../index.html" class="login-brand__name">Roy M. Kerns</a>
+            </div>
+
+            <!-- Form card -->
+            <div class="login-form-wrap">
+
+                <p class="login-heading">Author Access</p>
+
+                <!-- Error banner -->
+                <div class="login-error" id="loginError" role="alert" aria-live="polite">
+                    <span class="login-error__icon">&#9888;</span>
+                    <span class="login-error__text" id="loginErrorText"></span>
+                </div>
+
+                <form class="login-form" id="loginForm" novalidate>
+
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email"
+                               id="loginEmail"
+                               name="email"
+                               autocomplete="email"
+                               placeholder="your@email.com"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password"
+                               id="loginPassword"
+                               name="password"
+                               autocomplete="current-password"
+                               placeholder="••••••••"
+                               required>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        Sign In
+                    </button>
+
+                </form>
+
+                <!-- Forgot password -->
+                <div class="login-footer">
+                    <button class="forgot-link" id="forgotBtn" type="button">
+                        Forgot password?
+                    </button>
+                    <div class="reset-confirm" id="resetConfirm">
+                        <p>
+                            Reset link sent — check your inbox.<br>
+                            You can close this page.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Back to site -->
+            <a href="../index.html" class="login-back">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Back to site
+            </a>
+
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+
+    <script type="module">
+        import { auth } from '../js/firebase-config.js';
+        import {
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            sendPasswordResetEmail
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        /* ── DOM ── */
+        const form        = document.getElementById('loginForm');
+        const emailInput  = document.getElementById('loginEmail');
+        const passInput   = document.getElementById('loginPassword');
+        const loginBtn    = document.getElementById('loginBtn');
+        const errorBanner = document.getElementById('loginError');
+        const errorText   = document.getElementById('loginErrorText');
+        const forgotBtn   = document.getElementById('forgotBtn');
+        const resetBox    = document.getElementById('resetConfirm');
+
+        /* ── ALREADY LOGGED IN? REDIRECT ── */
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                window.location.replace('dashboard.html');
+            }
+        });
+
+        /* ── SIGN IN ── */
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            hideError();
+
+            const email    = emailInput.value.trim();
+            const password = passInput.value;
+
+            // Basic field validation
+            let hasError = false;
+            if (!email)    { emailInput.classList.add('error');  hasError = true; }
+            if (!password) { passInput.classList.add('error');   hasError = true; }
+            if (hasError) return;
+
+            setLoading(true);
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged above will handle the redirect
+            } catch (err) {
+                setLoading(false);
+                showError(friendlyError(err.code));
+            }
+        });
+
+        // Clear field error on input
+        [emailInput, passInput].forEach(el => {
+            el.addEventListener('input', () => el.classList.remove('error'));
+        });
+
+        /* ── FORGOT PASSWORD ── */
+        forgotBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                emailInput.classList.add('error');
+                emailInput.focus();
+                showError('Enter your email address above first.');
+                return;
+            }
+
+            forgotBtn.disabled = true;
+            forgotBtn.textContent = 'Sending…';
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                resetBox.classList.add('visible');
+                hideError();
+            } catch (err) {
+                showError(friendlyError(err.code));
+            } finally {
+                forgotBtn.disabled   = false;
+                forgotBtn.textContent = 'Forgot password?';
+            }
+        });
+
+        /* ── HELPERS ── */
+        function setLoading(loading) {
+            loginBtn.disabled     = loading;
+            loginBtn.innerHTML    = loading
+                ? '<span class="spinner"></span>Signing in…'
+                : 'Sign In';
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorBanner.classList.add('visible');
+        }
+
+        function hideError() {
+            errorBanner.classList.remove('visible');
+            errorText.textContent = '';
+        }
+
+        function friendlyError(code) {
+            const map = {
+                'auth/invalid-email':           'That doesn\'t look like a valid email address.',
+                'auth/user-not-found':           'No account found with that email.',
+                'auth/wrong-password':           'Incorrect password. Try again or reset it below.',
+                'auth/invalid-credential':       'Incorrect email or password.',
+                'auth/too-many-requests':        'Too many failed attempts. Try again later or reset your password.',
+                'auth/user-disabled':            'This account has been disabled.',
+                'auth/network-request-failed':   'Network error — check your connection and try again.',
+            };
+            return map[code] || 'Something went wrong. Check the console for details.';
+        }
+    </script>
+
+</body>
+</html>

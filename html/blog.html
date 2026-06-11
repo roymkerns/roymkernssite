@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Roy M. Kerns</title>
+    <meta name="description" content="Writing updates, worldbuilding notes, and behind-the-scenes content from Roy M. Kerns.">
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ── PAGE HEADER ── */
+        .blog-header {
+            padding-block: calc(var(--nav-h) + 4rem) 3rem;
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-btn {
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.25rem;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+        }
+
+            .filter-btn:hover {
+                border-color: var(--text-muted);
+                color: var(--text);
+            }
+
+            .filter-btn.active {
+                background: var(--purple);
+                border-color: var(--purple);
+                color: var(--text);
+                box-shadow: var(--glow-purple);
+            }
+
+        /* ── POST COUNT ── */
+        .blog-count {
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            min-height: 1rem;
+        }
+
+        /* ── BLOG GRID ── */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        /* ── BLOG CARD ── */
+        .blog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-sub);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .blog-card:hover {
+                border-color: var(--border);
+                transform: translateY(-3px);
+                box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            }
+
+        .blog-card__img {
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: var(--bg-surface);
+            position: relative;
+        }
+
+            .blog-card__img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.5s ease;
+            }
+
+        .blog-card:hover .blog-card__img img {
+            transform: scale(1.04);
+        }
+
+        /* Placeholder when no cover image */
+        .blog-card__img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+        }
+
+            .blog-card__img-placeholder span {
+                font-family: var(--font-display);
+                font-size: 0.6rem;
+                letter-spacing: 0.35em;
+                color: var(--text-dim);
+                text-transform: uppercase;
+            }
+
+        .blog-card__body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            padding: 1.5rem;
+        }
+
+        .blog-card__tag {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.32em;
+            color: var(--orange);
+            text-transform: uppercase;
+        }
+
+        .blog-card__title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            letter-spacing: 0.03em;
+            color: var(--text);
+            line-height: 1.3;
+            transition: color 0.25s ease;
+        }
+
+        .blog-card:hover .blog-card__title {
+            color: var(--purple-light);
+        }
+
+        .blog-card__excerpt {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-card__meta {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            color: var(--text-dim);
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-sub);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        /* ── SKELETON ── */
+        .skeleton-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-sub);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .skeleton-img-16-9 {
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+        }
+
+        .skeleton-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .skeleton-line {
+            height: 0.7rem;
+            background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+            border-radius: 2px;
+        }
+
+        .skeleton-line--xs {
+            width: 35%;
+        }
+
+        .skeleton-line--short {
+            width: 55%;
+        }
+
+        .skeleton-line--med {
+            width: 78%;
+        }
+
+        .skeleton-line--full {
+            width: 100%;
+        }
+
+        .skeleton-line--tall {
+            height: 1.1rem;
+        }
+
+        @keyframes shimmer {
+            from {
+                background-position: -200% 0;
+            }
+
+            to {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ── STATES ── */
+        .state-message {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6rem 2rem;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .state-message__icon {
+            font-size: 2.5rem;
+            opacity: 0.2;
+        }
+
+        .state-message__title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .state-message__body {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            font-style: italic;
+            max-width: 360px;
+            line-height: 1.7;
+        }
+
+        /* ── LOAD MORE ── */
+        .load-more-wrap {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 5rem;
+        }
+
+        #loadMoreBtn[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="../index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="trilogy.html">Trilogy</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- PAGE HEADER -->
+            <header class="blog-header reveal">
+                <span class="section-label">Hymns of the Hadrian Quadrant</span>
+                <h1 class="section-title">Blog</h1>
+                <div class="title-line"></div>
+                <p class="section-intro" style="margin-top:1.5rem; max-width:560px;">
+                    Writing updates, worldbuilding notes, and behind-the-scenes thoughts
+                    from the author of the Xerxes Trilogy.
+                </p>
+            </header>
+
+            <!-- FILTER BAR -->
+            <div class="filter-bar" id="filterBar" role="group" aria-label="Filter by category"></div>
+
+            <!-- POST COUNT -->
+            <p class="blog-count" id="blogCount" aria-live="polite"></p>
+
+            <!-- BLOG GRID -->
+            <div class="blog-grid" id="blogGrid" aria-label="Blog posts">
+                <!-- Skeleton — 6 cards -->
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card" aria-hidden="true">
+                    <div class="skeleton-img-16-9"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line--xs"></div>
+                        <div class="skeleton-line skeleton-line--tall skeleton-line--med"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--full"></div>
+                        <div class="skeleton-line skeleton-line--short"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOAD MORE -->
+            <div class="load-more-wrap">
+                <button class="btn-ghost" id="loadMoreBtn" hidden>
+                    Load More Posts
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color:var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import {
+            collection, query, where,
+            orderBy, getDocs, limit, startAfter
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        /* ── CONFIG ── */
+        const PAGE_SIZE   = 9;
+
+        /* ── STATE ── */
+        let allItems      = [];   // Full fetched + filtered list
+        let lastDoc       = null; // For Firestore pagination cursor
+        let activeFilter  = 'All';
+        let noMorePosts   = false;
+
+        /* ── DOM ── */
+        const grid        = document.getElementById('blogGrid');
+        const filterBar   = document.getElementById('filterBar');
+        const countEl     = document.getElementById('blogCount');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+        /* ════════════════════
+           FETCH POSTS
+           ════════════════════ */
+        async function fetchPosts(afterDoc = null) {
+            try {
+                let q = query(
+                    collection(db, 'blog'),
+                    where('published', '==', true),
+                    orderBy('createdAt', 'desc'),
+                    limit(PAGE_SIZE)
+                );
+
+                if (afterDoc) q = query(
+                    collection(db, 'blog'),
+                    where('published', '==', true),
+                    orderBy('createdAt', 'desc'),
+                    startAfter(afterDoc),
+                    limit(PAGE_SIZE)
+                );
+
+                const snap = await getDocs(q);
+                const posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                lastDoc      = snap.docs[snap.docs.length - 1] || null;
+                noMorePosts  = snap.docs.length < PAGE_SIZE;
+
+                return posts;
+            } catch (err) {
+                console.error('Blog fetch error:', err);
+                throw err;
+            }
+        }
+
+        /* ════════════════════
+           INITIAL LOAD
+           ════════════════════ */
+        async function init() {
+            try {
+                const posts = await fetchPosts();
+                allItems    = posts;
+                buildFilters(posts);
+                renderCards(posts, false);
+                updateLoadMore();
+            } catch {
+                showError();
+            }
+        }
+
+        /* ════════════════════
+           LOAD MORE
+           ════════════════════ */
+        loadMoreBtn.addEventListener('click', async () => {
+            loadMoreBtn.textContent = 'Loading...';
+            loadMoreBtn.disabled    = true;
+
+            try {
+                const more  = await fetchPosts(lastDoc);
+                allItems    = [...allItems, ...more];
+                renderCards(more, true);   // append
+                updateLoadMore();
+            } catch {
+                window.RKUtils?.showToast('Failed to load more posts', 'error');
+            } finally {
+                loadMoreBtn.textContent = 'Load More Posts';
+                loadMoreBtn.disabled    = false;
+            }
+        });
+
+        function updateLoadMore() {
+            loadMoreBtn.hidden = noMorePosts || allItems.length === 0;
+        }
+
+        /* ════════════════════
+           FILTERS
+           ════════════════════ */
+        function buildFilters(posts) {
+            const cats = ['All', ...new Set(
+                posts.map(p => p.category).filter(Boolean)
+            )];
+
+            filterBar.innerHTML = cats.map(cat => `
+                <button class="filter-btn${cat === 'All' ? ' active' : ''}"
+                        data-cat="${cat}"
+                        aria-pressed="${cat === 'All'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBar.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
+
+                    activeFilter = btn.dataset.cat;
+                    const visible = activeFilter === 'All'
+                        ? allItems
+                        : allItems.filter(p => p.category === activeFilter);
+
+                    renderCards(visible, false);
+
+                    // Hide load more when filtering client-side
+                    loadMoreBtn.hidden = activeFilter !== 'All' || noMorePosts;
+                });
+            });
+        }
+
+        /* ════════════════════
+           RENDER CARDS
+           ════════════════════ */
+        function renderCards(posts, append) {
+            if (!append) {
+                if (posts.length === 0) {
+                    grid.innerHTML = `
+                        <div class="state-message">
+                            <span class="state-message__icon">&#9998;</span>
+                            <p class="state-message__title">No posts yet</p>
+                            <p class="state-message__body">
+                                Blog posts will appear here once they've been published.
+                            </p>
+                        </div>`;
+                    countEl.textContent = '';
+                    return;
+                }
+                grid.innerHTML = '';
+            }
+
+            countEl.textContent = allItems.length > 0
+                ? `${allItems.length} post${allItems.length === 1 ? '' : 's'}`
+                : '';
+
+            const fragment = document.createDocumentFragment();
+
+            posts.forEach(post => {
+                const readTime = estimateReadTime(post.content || '');
+                const date     = window.RKUtils?.formatDate(post.createdAt) || '';
+
+                const card = document.createElement('a');
+                card.className   = 'blog-card reveal';
+                card.href        = `blog-post.html?id=${post.id}`;
+                card.setAttribute('aria-label', post.title || 'Blog post');
+
+                card.innerHTML = `
+                    <div class="blog-card__img">
+                        ${post.coverImageUrl
+                            ? `<img src="${post.coverImageUrl}" alt="${post.title || ''}" loading="lazy">`
+                            : `<div class="blog-card__img-placeholder">
+                                   <span>No Image</span>
+                               </div>`
+                        }
+                    </div>
+                    <div class="blog-card__body">
+                        ${post.category
+                            ? `<span class="blog-card__tag">${post.category}</span>`
+                            : ''}
+                        <h2 class="blog-card__title">${post.title || 'Untitled'}</h2>
+                        ${post.excerpt
+                            ? `<p class="blog-card__excerpt">${post.excerpt}</p>`
+                            : ''}
+                        <div class="blog-card__meta">
+                            <span>${date}</span>
+                            ${readTime ? `<span>${readTime}</span>` : ''}
+                        </div>
+                    </div>`;
+
+                fragment.appendChild(card);
+            });
+
+            grid.appendChild(fragment);
+
+            // Trigger reveals on newly added cards
+            grid.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+                const obs = new IntersectionObserver(entries => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add('visible');
+                            obs.unobserve(e.target);
+                        }
+                    });
+                }, { threshold: 0.08 });
+                obs.observe(el);
+            });
+        }
+
+        /* ════════════════════
+           ERROR STATE
+           ════════════════════ */
+        function showError() {
+            grid.innerHTML = `
+                <div class="state-message">
+                    <span class="state-message__icon">&#9888;</span>
+                    <p class="state-message__title">Couldn't load posts</p>
+                    <p class="state-message__body">
+                        There was a problem connecting to the database. Try refreshing.
+                    </p>
+                </div>`;
+            countEl.textContent = '';
+        }
+
+        /* ════════════════════
+           UTILITY
+           ════════════════════ */
+        function estimateReadTime(html) {
+            const text  = html.replace(/<[^>]*>/g, '');
+            const words = text.trim().split(/\s+/).length;
+            const mins  = Math.max(1, Math.round(words / 200));
+            return `${mins} min read`;
+        }
+
+        /* ── INIT ── */
+        document.getElementById('year').textContent = new Date().getFullYear();
+        init();
+    </script>
+
+</body>
+</html>
