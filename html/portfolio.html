@@ -422,4 +422,435 @@
             }
         }
     </style>
-    
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="../index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="trilogy.html">Trilogy</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- PAGE HEADER -->
+            <header class="portfolio-header reveal">
+                <span class="section-label">Hymns of the Hadrian Quadrant</span>
+                <h1 class="section-title">Portfolio</h1>
+                <div class="title-line"></div>
+                <p class="section-intro" style="margin-top:1.5rem; max-width:560px;">
+                    Art, character illustrations, cover concepts, and behind-the-scenes content
+                    from the world of the Xerxes Trilogy.
+                </p>
+            </header>
+
+            <!-- FILTER BAR -->
+            <div class="filter-bar" id="filterBar" role="group" aria-label="Filter by category">
+                <!-- Populated by JS once items are loaded -->
+            </div>
+
+            <!-- ITEM COUNT -->
+            <p class="portfolio-count" id="portfolioCount" aria-live="polite"></p>
+
+            <!-- PORTFOLIO GRID -->
+            <div class="portfolio-grid" id="portfolioGrid" aria-label="Portfolio items">
+
+                <!-- Skeleton loading state — 9 cards -->
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+                <div class="skeleton-item" aria-hidden="true">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line skeleton-line--short" style="margin-top:0.5rem;"></div>
+                    <div class="skeleton-line skeleton-line--med"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Portfolio item viewer">
+
+        <div class="lightbox__backdrop" id="lightboxBackdrop"></div>
+
+        <button class="lightbox__close" id="lightboxClose" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </button>
+
+        <div class="lightbox__panel">
+
+            <div class="lightbox__img-wrap">
+                <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Previous item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </button>
+
+                <img class="lightbox__img" id="lightboxImg" src="" alt="" loading="lazy">
+
+                <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Next item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="lightbox__info">
+                <span class="lightbox__cat" id="lightboxCat"></span>
+                <h2 class="lightbox__title" id="lightboxTitle"></h2>
+                <p class="lightbox__desc" id="lightboxDesc"></p>
+                <p class="lightbox__counter" id="lightboxCounter"></p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color:var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shared scripts (starfield, nav, reveals) -->
+    <script src="../js/script.js"></script>
+
+    <!-- Portfolio Firebase logic -->
+    <script type="module">
+        import { db }          from '../js/firebase-config.js';
+        import {
+            collection,
+            getDocs,
+            query,
+            orderBy
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        /* ── STATE ── */
+        let allItems     = [];   // Full item list from Firestore
+        let filtered     = [];   // Currently visible after category filter
+        let lightboxIndex = 0;   // Which item is open in the lightbox
+
+        /* ── DOM REFS ── */
+        const grid      = document.getElementById('portfolioGrid');
+        const filterBar = document.getElementById('filterBar');
+        const countEl   = document.getElementById('portfolioCount');
+
+        /* ════════════════════════════════
+           FETCH FROM FIRESTORE
+           ════════════════════════════════ */
+        async function loadPortfolio() {
+            try {
+                const q        = query(collection(db, 'portfolio'), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+                allItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                buildFilters(allItems);
+                renderGrid(allItems);
+            } catch (err) {
+                console.error('Portfolio fetch error:', err);
+                showError();
+            }
+        }
+
+        /* ════════════════════════════════
+           BUILD CATEGORY FILTER BAR
+           ════════════════════════════════ */
+        function buildFilters(items) {
+            const cats = ['All', ...new Set(
+                items
+                    .map(i => i.category)
+                    .filter(Boolean)
+                    .map(c => c.trim())
+            )];
+
+            filterBar.innerHTML = cats.map(cat => `
+                <button class="filter-btn${cat === 'All' ? ' active' : ''}"
+                        data-cat="${cat}"
+                        aria-pressed="${cat === 'All'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBar.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
+
+                    const cat = btn.dataset.cat;
+                    filtered = cat === 'All'
+                        ? allItems
+                        : allItems.filter(i => i.category === cat);
+
+                    renderGrid(filtered);
+                });
+            });
+        }
+
+        /* ════════════════════════════════
+           RENDER GRID
+           ════════════════════════════════ */
+        function renderGrid(items) {
+            filtered = items;
+
+            // Update count
+            countEl.textContent = items.length === 0 ? '' :
+                `${items.length} item${items.length === 1 ? '' : 's'}`;
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="state-message">
+                        <span class="state-message__icon">&#9670;</span>
+                        <p class="state-message__title">Nothing here yet</p>
+                        <p class="state-message__body">
+                            Portfolio items will appear here once they've been published.
+                        </p>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = items.map((item, i) => `
+                <article class="portfolio-item reveal"
+                         data-index="${i}"
+                         role="button"
+                         tabindex="0"
+                         aria-label="View ${item.title || 'portfolio item'}">
+                    <div class="portfolio-item__img">
+                        <img src="${item.imageUrl}"
+                             alt="${item.title || 'Portfolio item'}"
+                             loading="lazy">
+                        <div class="portfolio-item__overlay" aria-hidden="true">
+                            <div class="portfolio-item__overlay-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    <line x1="11" y1="8" x2="11" y2="14"/>
+                                    <line x1="8"  y1="11" x2="14"  y2="11"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-item__body">
+                        ${item.category
+                            ? `<span class="portfolio-item__cat">${item.category}</span>`
+                            : ''}
+                        ${item.title
+                            ? `<p class="portfolio-item__title">${item.title}</p>`
+                            : ''}
+                        ${item.description
+                            ? `<p class="portfolio-item__desc">${item.description}</p>`
+                            : ''}
+                    </div>
+                </article>
+            `).join('');
+
+            /* Attach click + keyboard handlers */
+            grid.querySelectorAll('.portfolio-item').forEach(el => {
+                const open = () => openLightbox(parseInt(el.dataset.index));
+                el.addEventListener('click', open);
+                el.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        open();
+                    }
+                });
+            });
+
+            /* Trigger scroll reveals */
+            if (window.RKUtils) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08 });
+                grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            }
+        }
+
+        /* ════════════════════════════════
+           ERROR STATE
+           ════════════════════════════════ */
+        function showError() {
+            grid.innerHTML = `
+                <div class="state-message">
+                    <span class="state-message__icon">&#9888;</span>
+                    <p class="state-message__title">Couldn't load portfolio</p>
+                    <p class="state-message__body">
+                        There was a problem connecting to the database.
+                        Check the console for details, or try refreshing.
+                    </p>
+                </div>`;
+            countEl.textContent = '';
+        }
+
+        /* ════════════════════════════════
+           LIGHTBOX
+           ════════════════════════════════ */
+        const lightbox  = document.getElementById('lightbox');
+        const lbImg     = document.getElementById('lightboxImg');
+        const lbCat     = document.getElementById('lightboxCat');
+        const lbTitle   = document.getElementById('lightboxTitle');
+        const lbDesc    = document.getElementById('lightboxDesc');
+        const lbCounter = document.getElementById('lightboxCounter');
+        const lbPrev    = document.getElementById('lightboxPrev');
+        const lbNext    = document.getElementById('lightboxNext');
+
+        function openLightbox(index) {
+            lightboxIndex = index;
+            populateLightbox();
+            lightbox.hidden = false;
+            document.body.style.overflow = 'hidden';
+            // Focus close button for accessibility
+            document.getElementById('lightboxClose').focus();
+        }
+
+        function populateLightbox() {
+            const item = filtered[lightboxIndex];
+            if (!item) return;
+
+            lbImg.src          = item.imageUrl;
+            lbImg.alt          = item.title || 'Portfolio item';
+            lbCat.textContent  = item.category || '';
+            lbTitle.textContent = item.title || '';
+            lbDesc.textContent  = item.description || '';
+            lbCounter.textContent =
+                `${lightboxIndex + 1} / ${filtered.length}`;
+
+            lbPrev.disabled = lightboxIndex === 0;
+            lbNext.disabled = lightboxIndex === filtered.length - 1;
+        }
+
+        function closeLightbox() {
+            lightbox.hidden = true;
+            document.body.style.overflow = '';
+        }
+
+        function prevItem() {
+            if (lightboxIndex > 0) {
+                lightboxIndex--;
+                populateLightbox();
+            }
+        }
+
+        function nextItem() {
+            if (lightboxIndex < filtered.length - 1) {
+                lightboxIndex++;
+                populateLightbox();
+            }
+        }
+
+        /* Lightbox controls */
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxBackdrop').addEventListener('click', closeLightbox);
+        lbPrev.addEventListener('click', prevItem);
+        lbNext.addEventListener('click', nextItem);
+
+        /* Keyboard: ESC to close, arrow keys to navigate */
+        document.addEventListener('keydown', e => {
+            if (lightbox.hidden) return;
+            if (e.key === 'Escape')     closeLightbox();
+            if (e.key === 'ArrowLeft')  prevItem();
+            if (e.key === 'ArrowRight') nextItem();
+        });
+
+        /* ── INIT ── */
+        document.getElementById('year').textContent = new Date().getFullYear();
+        loadPortfolio();
+    </script>
+
+</body>
+</html>
