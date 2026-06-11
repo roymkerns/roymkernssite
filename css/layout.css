@@ -1,13 +1,12 @@
-/*=============================================================================================
-    LAYOUT.CSS
-    Structural skeleton 
-    roykerns.vercel.app / Hymns of the Hadrian Quadrant
+/* ============================================================
+   LAYOUT.CSS — Structural skeleton
+   roykerns.vercel.app / Hymns of the Hadrian Quadrant
    Handles: reset, containers, grids, spacing, positioning
-===============================================================================================*/
+   ============================================================ */
 
-/*=====================================================
-    SPACING & SIZE TOKENS
-=======================================================*/
+/* ===========================
+   SPACING & SIZE TOKENS
+   =========================== */
 :root {
     --nav-h: 68px;
     --max-w: 1180px;
@@ -18,10 +17,9 @@
     --section-pad-sm: 4rem;
 }
 
-/*======================================================
-    RESET
-
-========================================================*/
+/* ===========================
+   RESET
+   =========================== */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -70,20 +68,20 @@ input, textarea, select {
     -webkit-appearance: none;
 }
 
-/*======================================================
-        STARFIELD CANVAS
-========================================================*/
+/* ===========================
+   STARFIELD CANVAS
+   =========================== */
 #starfield {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    display: block; 
+    display: block;
 }
 
-/*=======================================================
-    GLOBAL STACKING CONTEXT
-=========================================================*/
+/* ===========================
+   GLOBAL STACKING
+   =========================== */
 header,
 main,
 footer,
@@ -205,12 +203,13 @@ section,
 
 .hero-decoration {
     position: absolute;
-    inset-inline-end: -160px;
+    inset-inline-end: -50px;
     top: 50%;
     transform: translateY(-50%);
     width: 600px;
     height: 600px;
     pointer-events: none;
+    overflow: visible;
 }
 
 .orbit-ring {

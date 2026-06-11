@@ -271,26 +271,30 @@
 
 /* ===========================
    PARALLAX (trilogy page)
-   Call initParallax() on
-   pages that use it
+   Viewport-relative: each element shifts
+   based on its own distance from the screen
+   center, so each cover gets independent
+   natural movement. Call initParallax() on
+   pages that use it.
    =========================== */
 function initParallax() {
     const layers = document.querySelectorAll('[data-parallax]');
     if (!layers.length) return;
-
-    // Disable on mobile
     if (window.innerWidth < 768) return;
 
-    const onScroll = () => {
-        const scrollY = window.scrollY;
+    const update = () => {
+        const vh = window.innerHeight;
         layers.forEach(el => {
-            const speed = parseFloat(el.dataset.parallax) || 0.3;
-            const offset = scrollY * speed;
-            el.style.transform = `translateY(${offset}px)`;
+            const speed = parseFloat(el.dataset.parallax) || 0.15;
+            const rect = el.getBoundingClientRect();
+            const center = (rect.top + rect.height / 2) - vh / 2;
+            el.style.transform = `translateY(${center * speed}px)`;
         });
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
 }
 
 

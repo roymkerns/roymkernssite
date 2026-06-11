@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Xerxes Trilogy — Roy M. Kerns</title>
+    <meta name="description" content="The Xerxes Trilogy by Roy M. Kerns — three books set within the Hymns of the Hadrian Quadrant universe.">
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ── TRILOGY HERO ── */
+        .trilogy-hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trilogy-hero__content {
+            max-width: 680px;
+        }
+
+        .trilogy-main-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            letter-spacing: 0.05em;
+            line-height: 1.0;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+            .trilogy-main-title span {
+                display: block;
+                color: var(--text-muted);
+                font-size: 0.55em;
+                letter-spacing: 0.22em;
+                margin-bottom: 0.4rem;
+            }
+
+        .trilogy-tagline {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-muted);
+            line-height: 1.85;
+            margin-bottom: 3rem;
+            max-width: 520px;
+        }
+
+        /* Scroll cue */
+        .scroll-cue {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .scroll-cue__label {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.42em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .scroll-cue__line {
+            width: 1px;
+            height: 52px;
+            background: linear-gradient(to bottom, var(--purple), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1.15);
+            }
+        }
+
+        /* ── BOOK ENTRIES ── */
+        .trilogy-books-wrap {
+            padding-block: 2rem 8rem;
+        }
+
+        /* Cover column — the parallax target */
+        .trilogy-cover-col {
+            position: relative;
+        }
+
+        .trilogy-cover-link {
+            display: block;
+            position: relative;
+        }
+
+        .trilogy-cover-wrap {
+            overflow: hidden; /* Clips parallax movement */
+            position: relative;
+        }
+
+        /* The inner element that actually moves */
+        .trilogy-cover-inner {
+            aspect-ratio: 2 / 3;
+            position: relative;
+            transition: transform 0.1s linear; /* Smoothed by RAF */
+        }
+
+        /* Hover lift — only for clickable covers */
+        .trilogy-cover-link:hover .trilogy-cover-inner {
+            filter: brightness(1.08);
+        }
+
+        .trilogy-cover-link::after {
+            content: 'READ MORE →';
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.28em;
+            color: var(--text);
+            background: rgba(5, 5, 10, 0.85);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.25rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            white-space: nowrap;
+            z-index: 2;
+            backdrop-filter: blur(4px);
+        }
+
+        .trilogy-cover-link:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Text column */
+        .trilogy-text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-block: 2rem;
+        }
+
+        .trilogy-book-number {
+            font-family: var(--font-display);
+            font-size: clamp(5rem, 10vw, 8rem);
+            letter-spacing: 0.04em;
+            color: rgba(138, 53, 232, 0.08);
+            line-height: 1;
+            user-select: none;
+            margin-bottom: 0rem;
+            display: block;
+        }
+
+        .trilogy-book-badge {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.42em;
+            color: var(--orange);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .trilogy-book-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            letter-spacing: 0.04em;
+            color: var(--text);
+            line-height: 1.15;
+            display: block;
+            margin-bottom: 1.5rem;
+            transition: color 0.25s ease;
+        }
+
+        a.trilogy-book-title:hover {
+            color: var(--purple-light);
+        }
+
+        .trilogy-book-blurb {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+            .trilogy-book-blurb p {
+                font-family: var(--font-body);
+                font-size: 0.98rem;
+                line-height: 1.9;
+                color: var(--text-muted);
+            }
+
+            .trilogy-book-blurb .hook {
+                font-style: italic;
+                color: var(--text);
+                padding-left: 1.25rem;
+                border-left: 2px solid var(--orange);
+            }
+
+        /* Entry separator */
+        .trilogy-book-entry + .trilogy-book-entry {
+            margin-top: 2rem;
+            padding-top: 5rem;
+            border-top: 1px solid var(--border-sub);
+        }
+
+        /* ── BOOK 3 — COMING SOON ── */
+        .entry-coming-soon .trilogy-cover-wrap {
+            filter: grayscale(0.6) brightness(0.6);
+        }
+
+        .trilogy-cover-wrap.locked::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(5,5,10,0.5) 0%, rgba(62,20,112,0.3) 100%);
+            z-index: 1;
+        }
+
+        .coming-soon-badge {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.38em;
+            color: var(--text-dim);
+            border: 1px solid var(--text-dim);
+            padding: 0.45rem 1rem;
+            margin-bottom: 1.5rem;
+            clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+        }
+
+        .entry-coming-soon .trilogy-book-number {
+            color: rgba(100, 100, 120, 0.06);
+        }
+
+        .entry-coming-soon .trilogy-book-badge {
+            color: var(--text-dim);
+        }
+
+        .entry-coming-soon .trilogy-book-title {
+            color: var(--text-muted);
+            cursor: default;
+        }
+
+        .entry-coming-soon .trilogy-book-blurb p {
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* Placeholder fill colors per book */
+        .cover-fill-1 {
+            background: linear-gradient(150deg, #0D0A1A 0%, #1A0A30 40%, #2A1050 100%);
+        }
+
+        .cover-fill-2 {
+            background: linear-gradient(150deg, #0A0D1A 0%, #0A1A2A 40%, #0A2035 100%);
+        }
+
+        .cover-fill-3 {
+            background: linear-gradient(150deg, #0A0A0F 0%, #111118 50%, #151520 100%);
+        }
+
+        .cover-icon-large {
+            font-size: 3.5rem;
+            opacity: 0.25;
+        }
+
+        .cover-label {
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.35em;
+            color: rgba(255,255,255,0.25);
+            text-align: center;
+        }
+
+        /* Responsive override for entry grid */
+        @media (max-width: 960px) {
+            .trilogy-book-number {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- NAV -->
+    <header id="site-header">
+        <nav aria-label="Main navigation">
+            <a href="../index.html" class="nav-logo" aria-label="Roy M. Kerns — Home">
+                <span class="nav-logo__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="nav-logo__name">Roy M. Kerns</span>
+            </a>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="trilogy.html">Trilogy</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle"
+                    aria-controls="navLinks"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ========================
+             TRILOGY HERO
+             ======================== -->
+        <section class="trilogy-hero">
+            <div class="trilogy-hero__content container">
+
+                <p class="hero-universe" style="margin-bottom: 1.5rem;">
+                    Hymns of the Hadrian Quadrant
+                </p>
+
+                <h1 class="trilogy-main-title">
+                    <span>The Xerxes</span>
+                    Trilogy
+                </h1>
+
+                <p class="trilogy-tagline">
+                    Three books. One station at the edge of known space.<br>
+                    The fragile remains of what humanity left behind — and what it might yet become.
+                </p>
+
+                <div class="scroll-cue" aria-hidden="true">
+                    <span class="scroll-cue__label">Scroll to explore</span>
+                    <div class="scroll-cue__line"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================
+             BOOK ENTRIES
+             ======================== -->
+        <div class="trilogy-books-wrap">
+            <div class="container">
+
+                <!-- ── BOOK ONE: THE AZAR PROJECT ── -->
+                <article class="trilogy-book-entry reveal">
+
+                    <div class="trilogy-cover-col">
+                        <a href="azar.html" class="trilogy-cover-link" aria-label="Read more about The Azar Project">
+                            <div class="trilogy-cover-wrap">
+                                <div class="trilogy-cover-inner cover-fill-1" data-parallax="0.12"
+                                     style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.75rem;">
+                                    <!--
+                                        TO ADD COVER ART:
+                                        Replace this div's contents with:
+                                        <img src="../assets/covers/azar-project.jpg"
+                                             alt="The Azar Project book cover"
+                                             style="width:100%;height:100%;object-fit:cover;display:block;">
+                                    -->
+                                    <span class="cover-icon-large">&#9670;</span>
+                                    <span class="cover-label">The Azar Project</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="trilogy-text-col">
+                        <span class="trilogy-book-number" aria-hidden="true">01</span>
+                        <span class="trilogy-book-badge">Book One</span>
+                        <a href="azar.html" class="trilogy-book-title">The Azar Project</a>
+
+                        <div class="trilogy-book-blurb">
+                            <p>From the void emerges the USS Azar — a relic of an unknown Cataclysm that wiped out many of humanity's interstellar colonies. Its timely arrival brings a glimmer of hope to Dr. Mayakannan and her crew aboard Xerxes Station after the loss of a fifteen-year-old psychic, Vega Santos.</p>
+                            <p>Mayakannan secretly launches the Azar Project in direct defiance of ExoLink, the largest conglomerate in the Hadrian Quadrant — holding her by the neck with a dubious contract that stands in the way of her mission to uncover the secrets of the past.</p>
+                            <p class="hook">A chance for humanity's future, but only if it doesn't tear them apart first.</p>
+                        </div>
+
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                            <a href="azar.html" class="btn-primary">Read More</a>
+                            <a href="azar.html#retailers" class="btn-ghost">Where to Buy</a>
+                        </div>
+                    </div>
+
+                </article>
+
+                <!-- ── BOOK TWO: THE KARAVA INITIATIVE ── -->
+                <article class="trilogy-book-entry reveal">
+
+                    <div class="trilogy-cover-col">
+                        <a href="karava.html" class="trilogy-cover-link" aria-label="Read more about The Karava Initiative">
+                            <div class="trilogy-cover-wrap">
+                                <div class="trilogy-cover-inner cover-fill-2" data-parallax="0.12"
+                                     style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.75rem;">
+                                    <!--
+                                        TO ADD COVER ART:
+                                        Replace this div's contents with:
+                                        <img src="../assets/covers/karava-initiative.jpg"
+                                             alt="The Karava Initiative book cover"
+                                             style="width:100%;height:100%;object-fit:cover;display:block;">
+                                    -->
+                                    <span class="cover-icon-large" style="color: rgba(40,130,200,0.4);">&#9670;</span>
+                                    <span class="cover-label">The Karava Initiative</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="trilogy-text-col">
+                        <span class="trilogy-book-number" aria-hidden="true">02</span>
+                        <span class="trilogy-book-badge">Book Two</span>
+                        <a href="karava.html" class="trilogy-book-title">The Karava Initiative</a>
+
+                        <div class="trilogy-book-blurb">
+                            <p>The Azar Project changed everything. Now the secrets it uncovered have drawn new eyes to Xerxes Station — and not all of them are human.</p>
+                            <p class="hook">[ Add the Karava Initiative blurb here when ready. ]</p>
+                        </div>
+
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                            <a href="karava.html" class="btn-primary">Read More</a>
+                        </div>
+                    </div>
+
+                </article>
+
+                <!-- ── BOOK THREE: COMING SOON ── -->
+                <article class="trilogy-book-entry entry-coming-soon reveal">
+
+                    <div class="trilogy-cover-col">
+                        <div class="trilogy-cover-link" style="cursor:default;" aria-label="Book Three — Coming Soon">
+                            <div class="trilogy-cover-wrap locked">
+                                <div class="trilogy-cover-inner cover-fill-3" data-parallax="0.08"
+                                     style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.75rem;">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                         stroke="rgba(255,255,255,0.15)" stroke-width="1.5"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         aria-hidden="true">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                    <span class="cover-label" style="opacity:0.3;">Title Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trilogy-text-col">
+                        <span class="trilogy-book-number" aria-hidden="true">03</span>
+                        <span class="trilogy-book-badge">Book Three</span>
+                        <span class="trilogy-book-title" style="color:var(--text-muted);">[Untitled]</span>
+
+                        <span class="coming-soon-badge">Coming Soon</span>
+
+                        <div class="trilogy-book-blurb">
+                            <p>The conclusion to the Xerxes Trilogy. Title and details forthcoming.</p>
+                        </div>
+                    </div>
+
+                </article>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-name">Roy M. Kerns</span>
+            <p class="footer-copy">
+                &copy; <span id="year"></span> Roy M. Kerns. All rights reserved.<br>
+                <span style="font-style:italic; color:var(--text-dim);">Hymns of the Hadrian Quadrant</span>
+            </p>
+            <div class="footer-social" role="list">
+                <a href="https://www.tiktok.com/@YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+                    </svg>
+                    TikTok
+                </a>
+                <a href="https://www.instagram.com/YOURHANDLE"
+                   class="footer-social-link" target="_blank" rel="noopener noreferrer" role="listitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        // Initialize viewport-relative parallax on the cover images
+        initParallax();
+    </script>
+
+</body>
+</html>
