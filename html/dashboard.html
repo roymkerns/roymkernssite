@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Roy M. Kerns</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#05050A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* ══════════════════════════════
+           DASHBOARD SHELL
+           ══════════════════════════════ */
+        #dashRoot {
+            display: none;
+        }
+        /* hidden until auth confirmed */
+
+        .dash-header {
+            position: fixed;
+            inset-block-start: 0;
+            inset-inline: 0;
+            height: var(--nav-h);
+            z-index: 500;
+            background: rgba(5,5,10,0.96);
+            border-bottom: 1px solid var(--border-sub);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-inline: 2rem;
+            gap: 1rem;
+        }
+
+        .dash-header__brand {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+            text-decoration: none;
+        }
+
+        .dash-header__universe {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.32em;
+            color: var(--orange);
+            text-transform: uppercase;
+        }
+
+        .dash-header__name {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            letter-spacing: 0.16em;
+            color: var(--text);
+        }
+
+        .dash-header__right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .dash-user-email {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+        }
+
+        .dash-signout-btn {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.45rem 1rem;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+            .dash-signout-btn:hover {
+                border-color: var(--orange);
+                color: var(--orange);
+            }
+
+        /* ══════════════════════════════
+           LAYOUT
+           ══════════════════════════════ */
+        .dash-body {
+            padding-top: var(--nav-h);
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* ══════════════════════════════
+           SIDEBAR
+           ══════════════════════════════ */
+        .dash-sidebar {
+            position: sticky;
+            top: var(--nav-h);
+            height: calc(100vh - var(--nav-h));
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-sub);
+            display: flex;
+            flex-direction: column;
+            padding-block: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .dash-nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+
+        .dash-nav-label {
+            font-family: var(--font-display);
+            font-size: 0.52rem;
+            letter-spacing: 0.38em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            padding: 1rem 1.25rem 0.4rem;
+        }
+
+        .dash-nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.6rem;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            padding: 0.7rem 1.25rem;
+            background: none;
+            border: none;
+            border-left: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+            .dash-nav-btn:hover {
+                color: var(--text);
+                background: var(--bg-elevated);
+            }
+
+            .dash-nav-btn.active {
+                color: var(--purple-light);
+                border-left-color: var(--purple);
+                background: var(--bg-elevated);
+            }
+
+        .dash-nav-btn__icon {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        .dash-nav-btn__label {
+            flex: 1;
+        }
+
+        .unread-badge {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.05em;
+            padding: 0.15rem 0.45rem;
+            background: var(--orange);
+            color: var(--bg);
+            border-radius: 10px;
+            display: none;
+        }
+
+            .unread-badge.visible {
+                display: inline-block;
+            }
+
+        .dash-sidebar-divider {
+            height: 1px;
+            background: var(--border-sub);
+            margin: 0.75rem 1.25rem;
+        }
+
+        /* ══════════════════════════════
+           MAIN CONTENT
+           ══════════════════════════════ */
+        .dash-main {
+            padding: 2.5rem;
+            min-height: calc(100vh - var(--nav-h));
+        }
+
+        /* ── PANEL ── */
+        .dash-panel {
+            display: none;
+        }
+
+            .dash-panel.active {
+                display: block;
+            }
+
+        .dash-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-sub);
+        }
+
+        .dash-panel-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            color: var(--text);
+        }
+
+        /* ── STATS GRID ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            transition: border-color 0.25s ease;
+        }
+
+            .stat-card:hover {
+                border-color: var(--border);
+            }
+
+        .stat-card__num {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            letter-spacing: 0.02em;
+            color: var(--purple-light);
+            line-height: 1;
+        }
+
+        .stat-card__label {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .stat-card__action {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            color: var(--text-dim);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            padding: 0;
+            margin-top: 0.5rem;
+            transition: color 0.2s ease;
+            text-transform: uppercase;
+        }
+
+            .stat-card__action:hover {
+                color: var(--purple-light);
+            }
+
+        /* ── RECENT LISTS ── */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .recent-block {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            padding: 1.5rem;
+        }
+
+        .recent-block__title {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding-block: 0.65rem;
+            border-bottom: 1px solid var(--border-sub);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+            .recent-item:last-child {
+                border-bottom: none;
+            }
+
+            .recent-item:hover {
+                background: var(--bg-elevated);
+                margin-inline: -1.5rem;
+                padding-inline: 1.5rem;
+            }
+
+        .recent-item__title {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .recent-item__meta {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ── STATUS BADGES ── */
+        .status-badge {
+            font-family: var(--font-display);
+            font-size: 0.52rem;
+            letter-spacing: 0.18em;
+            padding: 0.2rem 0.6rem;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .status-badge--published {
+            background: rgba(138,53,232,0.15);
+            color: var(--purple-light);
+            border: 1px solid rgba(138,53,232,0.3);
+        }
+
+        .status-badge--draft {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-dim);
+            border: 1px solid var(--text-dim);
+        }
+
+        .status-badge--unread {
+            background: rgba(224,104,40,0.15);
+            color: var(--orange-light);
+            border: 1px solid rgba(224,104,40,0.3);
+        }
+
+        /* ── BLOG POST LIST ── */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .post-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            cursor: pointer;
+            transition: border-color 0.25s ease;
+        }
+
+            .post-list-item:hover {
+                border-color: var(--border);
+            }
+
+        .post-list-item__title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            color: var(--text);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-list-item__cat {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+        }
+
+        .post-list-item__date {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* ── EDITOR ── */
+        .editor-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s ease;
+            margin-bottom: 1.75rem;
+        }
+
+            .editor-back-btn:hover {
+                color: var(--text-muted);
+            }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .editor-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .editor-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+            .editor-field label {
+                font-family: var(--font-display);
+                font-size: 0.58rem;
+                letter-spacing: 0.3em;
+                color: var(--text-dim);
+                text-transform: uppercase;
+            }
+
+            .editor-field input,
+            .editor-field textarea,
+            .editor-field select {
+                background: var(--bg-surface);
+                border: 1px solid var(--text-dim);
+                color: var(--text);
+                font-family: var(--font-body);
+                font-size: 0.95rem;
+                padding: 0.75rem 1rem;
+                width: 100%;
+                resize: none;
+                transition: border-color 0.2s ease;
+            }
+
+                .editor-field input:focus,
+                .editor-field textarea:focus,
+                .editor-field select:focus {
+                    border-color: var(--purple);
+                    outline: none;
+                }
+
+        .editor-field--title input {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* Toolbar */
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            padding: 0.6rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-sub);
+            border-bottom: none;
+        }
+
+        .toolbar-btn {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            padding: 0.35rem 0.65rem;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .toolbar-btn:hover {
+                border-color: var(--purple);
+                color: var(--text);
+                background: rgba(138,53,232,0.08);
+            }
+
+        .toolbar-sep {
+            width: 1px;
+            background: var(--border-sub);
+            margin-inline: 0.15rem;
+        }
+
+        .editor-textarea {
+            background: var(--bg-surface);
+            border: 1px solid var(--text-dim);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            line-height: 1.8;
+            padding: 1rem;
+            width: 100%;
+            min-height: 380px;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+            .editor-textarea:focus {
+                border-color: var(--purple);
+                outline: none;
+            }
+
+        /* Editor sidebar */
+        .editor-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            position: sticky;
+            top: calc(var(--nav-h) + 1.5rem);
+        }
+
+        .editor-sidebar-block {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .editor-sidebar-block__title {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Publish toggle */
+        .publish-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .publish-toggle__label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-elevated);
+            border: 1px solid var(--text-dim);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+            .toggle-slider::before {
+                content: '';
+                position: absolute;
+                width: 14px;
+                height: 14px;
+                left: 3px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: var(--text-dim);
+                transition: all 0.25s ease;
+            }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: rgba(138,53,232,0.2);
+            border-color: var(--purple);
+        }
+
+            .toggle-switch input:checked + .toggle-slider::before {
+                transform: translate(18px, -50%);
+                background: var(--purple-light);
+            }
+
+        /* Cover image upload in editor */
+        .cover-upload-area {
+            border: 1px dashed var(--text-dim);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.25s ease;
+            position: relative;
+        }
+
+            .cover-upload-area:hover {
+                border-color: var(--purple);
+            }
+
+            .cover-upload-area input {
+                display: none;
+            }
+
+        .cover-upload-area__label {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .cover-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: none;
+            margin-top: 0.75rem;
+        }
+
+            .cover-preview.visible {
+                display: block;
+            }
+
+        /* Upload progress */
+        .upload-progress-wrap {
+            display: none;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+            .upload-progress-wrap.visible {
+                display: flex;
+            }
+
+        .upload-progress-bar-bg {
+            height: 3px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-sub);
+            overflow: hidden;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background: var(--purple);
+            width: 0%;
+            transition: width 0.2s ease;
+            box-shadow: var(--glow-purple);
+        }
+
+        .upload-progress-label {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+        }
+
+        /* Editor action buttons */
+        .editor-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .editor-save-btn {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.8rem;
+            background: var(--purple);
+            color: var(--text);
+            border: 1px solid var(--purple);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+            .editor-save-btn:hover:not(:disabled) {
+                background: var(--purple-light);
+                box-shadow: var(--glow-purple);
+            }
+
+            .editor-save-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .editor-delete-btn {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            padding: 0.65rem;
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--text-dim);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+            .editor-delete-btn:hover {
+                border-color: var(--orange);
+                color: var(--orange);
+            }
+
+        /* ── PORTFOLIO ── */
+        .portfolio-upload-form {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            align-items: end;
+        }
+
+            .portfolio-upload-form .editor-field {
+                margin: 0;
+            }
+
+        .file-drop-zone {
+            grid-column: 1 / -1;
+            border: 1px dashed var(--text-dim);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+            .file-drop-zone:hover,
+            .file-drop-zone.drag-over {
+                border-color: var(--purple);
+                background: rgba(138,53,232,0.04);
+            }
+
+            .file-drop-zone input {
+                display: none;
+            }
+
+        .file-drop-zone__main {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .file-drop-zone__sub {
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        .file-selected-name {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            color: var(--purple-light);
+            margin-top: 0.6rem;
+            display: block;
+        }
+
+        .portfolio-upload-btn {
+            grid-column: 1 / -1;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.8rem;
+            background: var(--purple);
+            color: var(--text);
+            border: 1px solid var(--purple);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: 100%;
+        }
+
+            .portfolio-upload-btn:hover:not(:disabled) {
+                background: var(--purple-light);
+                box-shadow: var(--glow-purple);
+            }
+
+            .portfolio-upload-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .portfolio-progress-wrap {
+            grid-column: 1 / -1;
+            display: none;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+            .portfolio-progress-wrap.visible {
+                display: flex;
+            }
+
+        /* Portfolio item grid */
+        .dash-portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .dash-portfolio-item {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            overflow: hidden;
+            transition: border-color 0.25s ease;
+        }
+
+            .dash-portfolio-item:hover {
+                border-color: var(--border);
+            }
+
+        .dash-portfolio-item__img {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+            .dash-portfolio-item__img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .dash-portfolio-item__body {
+            padding: 0.65rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .dash-portfolio-item__title {
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            letter-spacing: 0.05em;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dash-portfolio-item__delete {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 0.18em;
+            color: var(--text-dim);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            text-transform: uppercase;
+            text-align: left;
+            transition: color 0.2s ease;
+        }
+
+            .dash-portfolio-item__delete:hover {
+                color: var(--orange);
+            }
+
+        /* ── MESSAGES ── */
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-sub);
+            cursor: pointer;
+            transition: border-color 0.25s ease;
+            overflow: hidden;
+        }
+
+            .message-item:hover {
+                border-color: var(--border);
+            }
+
+            .message-item.unread {
+                border-left: 2px solid var(--orange);
+            }
+
+        .message-item__header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+        }
+
+        .message-item__from {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .message-item__subject {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            flex: 2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-item__date {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* Expanded message body */
+        .message-item__body {
+            display: none;
+            padding: 0 1.25rem 1.25rem;
+            border-top: 1px solid var(--border-sub);
+        }
+
+        .message-item.expanded .message-item__body {
+            display: block;
+        }
+
+        .message-item__content {
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            line-height: 1.85;
+            color: var(--text-muted);
+            padding-top: 1rem;
+            margin-bottom: 1.25rem;
+            white-space: pre-wrap;
+        }
+
+        .message-item__actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .msg-action-btn {
+            font-family: var(--font-display);
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.45rem 0.9rem;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .msg-action-btn:hover {
+                border-color: var(--purple);
+                color: var(--purple-light);
+            }
+
+        .msg-action-btn--delete:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        /* ── EMPTY STATE ── */
+        .dash-empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-dim);
+        }
+
+        .dash-empty__icon {
+            font-size: 2rem;
+            opacity: 0.15;
+            margin-bottom: 0.75rem;
+        }
+
+        .dash-empty__text {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .dash-body {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-sidebar {
+                position: static;
+                height: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 0.5rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border-sub);
+            }
+
+            .dash-nav-label {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-sidebar {
+                position: static;
+            }
+
+            .portfolio-upload-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-main {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <!-- ── AUTH LOADING ── shown until Firebase confirms session -->
+    <div id="authLoading" style="
+        position:fixed; inset:0; z-index:999;
+        display:flex; align-items:center; justify-content:center;
+        background:var(--bg);">
+        <div style="text-align:center;">
+            <div class="loading-ring"></div>
+            <p class="loading-text" style="margin-top:1rem;">Verifying session…</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         DASHBOARD ROOT (hidden until auth)
+         ═══════════════════════════════ -->
+    <div id="dashRoot">
+
+        <!-- HEADER -->
+        <header class="dash-header">
+            <a href="../index.html" class="dash-header__brand" target="_blank">
+                <span class="dash-header__universe">Hymns of the Hadrian Quadrant</span>
+                <span class="dash-header__name">Roy M. Kerns</span>
+            </a>
+            <div class="dash-header__right">
+                <span class="dash-user-email" id="dashUserEmail"></span>
+                <button class="dash-signout-btn" id="dashSignOut">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="dash-body">
+
+            <!-- SIDEBAR -->
+            <aside class="dash-sidebar">
+                <div class="dash-nav-section">
+                    <span class="dash-nav-label">Dashboard</span>
+                    <button class="dash-nav-btn active" data-panel="overview">
+                        <span class="dash-nav-btn__icon">◈</span>
+                        <span class="dash-nav-btn__label">Overview</span>
+                    </button>
+                </div>
+
+                <div class="dash-nav-section">
+                    <span class="dash-nav-label">Content</span>
+                    <button class="dash-nav-btn" data-panel="blog">
+                        <span class="dash-nav-btn__icon">✎</span>
+                        <span class="dash-nav-btn__label">Blog Posts</span>
+                    </button>
+                    <button class="dash-nav-btn" data-panel="portfolio">
+                        <span class="dash-nav-btn__icon">◰</span>
+                        <span class="dash-nav-btn__label">Portfolio</span>
+                    </button>
+                    <button class="dash-nav-btn" data-panel="messages">
+                        <span class="dash-nav-btn__icon">◻</span>
+                        <span class="dash-nav-btn__label">Messages</span>
+                        <span class="unread-badge" id="unreadBadge"></span>
+                    </button>
+                </div>
+
+                <div class="dash-sidebar-divider"></div>
+
+                <div class="dash-nav-section">
+                    <a href="../index.html" class="dash-nav-btn" target="_blank">
+                        <span class="dash-nav-btn__icon">↗</span>
+                        <span class="dash-nav-btn__label">View Site</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- MAIN PANELS -->
+            <main class="dash-main">
+
+                <!-- ═══════════════
+                     OVERVIEW
+                     ═══════════════ -->
+                <div class="dash-panel active" id="panel-overview">
+                    <div class="dash-panel-header">
+                        <h1 class="dash-panel-title">Overview</h1>
+                        <button class="btn-primary" id="overviewNewPost" style="font-size:0.62rem; padding:0.6rem 1.4rem;">
+                            + New Post
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-card__num" id="statPosts">—</span>
+                            <span class="stat-card__label">Published Posts</span>
+                            <button class="stat-card__action" data-panel="blog">Manage posts →</button>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-card__num" id="statPortfolio">—</span>
+                            <span class="stat-card__label">Portfolio Items</span>
+                            <button class="stat-card__action" data-panel="portfolio">Manage portfolio →</button>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-card__num" id="statMessages">—</span>
+                            <span class="stat-card__label">Unread Messages</span>
+                            <button class="stat-card__action" data-panel="messages">View messages →</button>
+                        </div>
+                    </div>
+
+                    <div class="overview-grid">
+                        <div class="recent-block">
+                            <p class="recent-block__title">Recent Posts</p>
+                            <div id="recentPosts"></div>
+                        </div>
+                        <div class="recent-block">
+                            <p class="recent-block__title">Recent Messages</p>
+                            <div id="recentMessages"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════
+                     BLOG LIST
+                     ═══════════════ -->
+                <div class="dash-panel" id="panel-blog">
+                    <div class="dash-panel-header">
+                        <h1 class="dash-panel-title">Blog Posts</h1>
+                        <button class="btn-primary" id="blogNewPost" style="font-size:0.62rem; padding:0.6rem 1.4rem;">
+                            + New Post
+                        </button>
+                    </div>
+                    <div class="post-list" id="blogPostList"></div>
+                </div>
+
+                <!-- ═══════════════
+                     POST EDITOR
+                     ═══════════════ -->
+                <div class="dash-panel" id="panel-editor">
+                    <button class="editor-back-btn" id="editorBack">
+                        ← Back to posts
+                    </button>
+
+                    <div class="editor-grid">
+
+                        <!-- Main editing area -->
+                        <div class="editor-main">
+
+                            <div class="editor-field editor-field--title">
+                                <label for="postTitle">Title</label>
+                                <input type="text" id="postTitle" placeholder="Post title…">
+                            </div>
+
+                            <div class="editor-field">
+                                <label for="postExcerpt">Excerpt <span style="opacity:0.5">(shown on blog listing)</span></label>
+                                <textarea id="postExcerpt" rows="2" placeholder="One or two sentences that appear on the blog card…"></textarea>
+                            </div>
+
+                            <div class="editor-field">
+                                <label>Content</label>
+                                <div class="editor-toolbar" id="editorToolbar">
+                                    <button class="toolbar-btn" data-action="bold" title="Bold">B</button>
+                                    <button class="toolbar-btn" data-action="italic" title="Italic"><em>I</em></button>
+                                    <div class="toolbar-sep"></div>
+                                    <button class="toolbar-btn" data-action="h2" title="Heading 2">H2</button>
+                                    <button class="toolbar-btn" data-action="h3" title="Heading 3">H3</button>
+                                    <div class="toolbar-sep"></div>
+                                    <button class="toolbar-btn" data-action="quote" title="Blockquote">❝</button>
+                                    <button class="toolbar-btn" data-action="link" title="Link">⛓</button>
+                                    <div class="toolbar-sep"></div>
+                                    <button class="toolbar-btn" data-action="ul" title="Bullet list">• List</button>
+                                    <button class="toolbar-btn" data-action="p" title="Paragraph">¶</button>
+                                    <button class="toolbar-btn" data-action="hr" title="Divider">—</button>
+                                    <div class="toolbar-sep"></div>
+                                    <button class="toolbar-btn" data-action="preview" title="Preview HTML">Preview</button>
+                                </div>
+                                <textarea class="editor-textarea" id="postContent"
+                                          placeholder="Write your post here using the toolbar above, or type HTML directly…"></textarea>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="editor-sidebar">
+
+                            <!-- Publish -->
+                            <div class="editor-sidebar-block">
+                                <p class="editor-sidebar-block__title">Visibility</p>
+                                <div class="publish-toggle">
+                                    <span class="publish-toggle__label" id="publishLabel">Draft</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="postPublished">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="editor-save-btn" id="editorSave">Save Post</button>
+                                    <button class="editor-delete-btn" id="editorDelete" style="display:none;">
+                                        Delete Post
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="editor-sidebar-block">
+                                <p class="editor-sidebar-block__title">Category</p>
+                                <div class="editor-field">
+                                    <input type="text" id="postCategory"
+                                           placeholder="e.g. Writing Update, Worldbuilding…"
+                                           list="categorySuggestions">
+                                    <datalist id="categorySuggestions">
+                                        <option value="Writing Update">
+                                        <option value="Worldbuilding">
+                                        <option value="Behind the Scenes">
+                                        <option value="Announcement">
+                                        <option value="Character Study">
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <!-- Cover image -->
+                            <div class="editor-sidebar-block">
+                                <p class="editor-sidebar-block__title">Cover Image</p>
+                                <div class="cover-upload-area" id="blogCoverUploadArea">
+                                    <input type="file" id="blogCoverFile" accept="image/*">
+                                    <span class="cover-upload-area__label">
+                                        Click to upload<br>
+                                        <span style="color:var(--text-dim); font-size:0.55rem;">Max 3MB</span>
+                                    </span>
+                                    <img class="cover-preview" id="blogCoverPreview" alt="Cover preview">
+                                </div>
+                                <div class="upload-progress-wrap" id="blogUploadProgress">
+                                    <div class="upload-progress-bar-bg">
+                                        <div class="upload-progress-bar" id="blogProgressBar"></div>
+                                    </div>
+                                    <span class="upload-progress-label" id="blogProgressLabel">Uploading…</span>
+                                </div>
+                                <button class="editor-delete-btn" id="removeCoverBtn"
+                                        style="display:none; margin-top:0.5rem;">
+                                    Remove Cover
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════
+                     PORTFOLIO
+                     ═══════════════ -->
+                <div class="dash-panel" id="panel-portfolio">
+                    <div class="dash-panel-header">
+                        <h1 class="dash-panel-title">Portfolio</h1>
+                    </div>
+
+                    <!-- Upload form -->
+                    <div class="portfolio-upload-form">
+
+                        <div class="file-drop-zone" id="fileDropZone">
+                            <input type="file" id="portfolioFile" accept="image/*">
+                            <span class="file-drop-zone__main">Drop image here or click to browse</span>
+                            <span class="file-drop-zone__sub">JPG, PNG, WebP — max 3MB</span>
+                            <span class="file-selected-name" id="fileSelectedName"></span>
+                        </div>
+
+                        <div class="editor-field">
+                            <label for="portfolioTitle">Title</label>
+                            <input type="text" id="portfolioTitle" placeholder="e.g. Character sketch — Quiz">
+                        </div>
+
+                        <div class="editor-field">
+                            <label for="portfolioCategory">Category</label>
+                            <input type="text" id="portfolioCategory"
+                                   placeholder="e.g. Character Art, Cover Art…"
+                                   list="portCategorySuggestions">
+                            <datalist id="portCategorySuggestions">
+                                <option value="Character Art">
+                                <option value="Cover Art">
+                                <option value="Behind the Scenes">
+                                <option value="Concept Art">
+                            </datalist>
+                        </div>
+
+                        <div class="editor-field">
+                            <label for="portfolioDesc">Description</label>
+                            <textarea id="portfolioDesc" rows="2"
+                                      placeholder="Short description shown under the image…"></textarea>
+                        </div>
+
+                        <div class="portfolio-progress-wrap" id="portProgressWrap">
+                            <div class="upload-progress-bar-bg">
+                                <div class="upload-progress-bar" id="portProgressBar"></div>
+                            </div>
+                            <span class="upload-progress-label" id="portProgressLabel">Uploading…</span>
+                        </div>
+
+                        <button class="portfolio-upload-btn" id="portfolioUploadBtn">
+                            Upload Item
+                        </button>
+
+                    </div>
+
+                    <!-- Existing items -->
+                    <div class="dash-portfolio-grid" id="dashPortfolioGrid"></div>
+                </div>
+
+                <!-- ═══════════════
+                     MESSAGES
+                     ═══════════════ -->
+                <div class="dash-panel" id="panel-messages">
+                    <div class="dash-panel-header">
+                        <h1 class="dash-panel-title">Messages</h1>
+                        <span class="status-badge status-badge--unread"
+                              id="unreadCount" style="display:none;"></span>
+                    </div>
+                    <div class="message-list" id="messageList"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- HTML PREVIEW MODAL -->
+    <div id="previewModal" style="
+        display:none; position:fixed; inset:0; z-index:900;
+        background:rgba(5,5,10,0.92); backdrop-filter:blur(8px);
+        padding:2rem; overflow-y:auto;">
+        <div style="max-width:740px; margin:0 auto; background:var(--bg-surface);
+                    border:1px solid var(--border); padding:2.5rem; position:relative;">
+            <button id="previewClose" style="
+                position:absolute; top:1rem; right:1rem;
+                font-family:var(--font-display); font-size:0.62rem;
+                letter-spacing:0.2em; color:var(--text-dim);
+                background:none; border:1px solid var(--text-dim);
+                padding:0.35rem 0.75rem; cursor:pointer;">
+                CLOSE
+            </button>
+            <p style="font-family:var(--font-display); font-size:0.58rem;
+                       letter-spacing:0.35em; color:var(--orange);
+                       margin-bottom:1.5rem; text-transform:uppercase;">Preview</p>
+            <div id="previewContent" class="post-body" style="
+                font-family:var(--font-body); font-size:1rem;
+                line-height:1.9; color:var(--text-muted);">
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+
+    <script type="module">
+        import { auth, db, storage } from '../js/firebase-config.js';
+        import {
+            onAuthStateChanged, signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            collection, doc, addDoc, getDoc, getDocs,
+            updateDoc, deleteDoc, query, orderBy, serverTimestamp
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import {
+            ref, uploadBytesResumable, getDownloadURL, deleteObject
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+        /* ═══════════════════════════════════
+           AUTH GUARD
+           ═══════════════════════════════════ */
+        onAuthStateChanged(auth, user => {
+            document.getElementById('authLoading').style.display = 'none';
+            if (!user) {
+                window.location.replace('login.html');
+                return;
+            }
+            document.getElementById('dashRoot').style.display = 'block';
+            document.getElementById('dashUserEmail').textContent = user.email;
+            initDashboard();
+        });
+
+        /* ═══════════════════════════════════
+           SIGN OUT
+           ═══════════════════════════════════ */
+        document.getElementById('dashSignOut').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.replace('login.html');
+        });
+
+        /* ═══════════════════════════════════
+           PANEL NAVIGATION
+           ═══════════════════════════════════ */
+        let currentPanel = 'overview';
+
+        function showPanel(id) {
+            document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.dash-nav-btn').forEach(b => b.classList.remove('active'));
+
+            const panel = document.getElementById(`panel-${id}`);
+            if (panel) panel.classList.add('active');
+
+            document.querySelectorAll(`[data-panel="${id}"]`).forEach(b => {
+                if (b.classList.contains('dash-nav-btn')) b.classList.add('active');
+            });
+
+            currentPanel = id;
+        }
+
+        // Sidebar nav buttons
+        document.querySelectorAll('[data-panel]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const p = btn.dataset.panel;
+                showPanel(p);
+                if (p === 'blog')      loadBlogList();
+                if (p === 'portfolio') loadPortfolioList();
+                if (p === 'messages')  loadMessages();
+            });
+        });
+
+        /* ═══════════════════════════════════
+           INIT
+           ═══════════════════════════════════ */
+        async function initDashboard() {
+            loadOverview();
+
+            // New post buttons
+            document.getElementById('overviewNewPost').addEventListener('click', openNewEditor);
+            document.getElementById('blogNewPost').addEventListener('click', () => {
+                openNewEditor();
+                showPanel('editor');
+            });
+        }
+
+        /* ═══════════════════════════════════
+           OVERVIEW
+           ═══════════════════════════════════ */
+        async function loadOverview() {
+            const [posts, portItems, messages] = await Promise.all([
+                getDocs(query(collection(db, 'blog'),      orderBy('createdAt', 'desc'))),
+                getDocs(query(collection(db, 'portfolio'), orderBy('createdAt', 'desc'))),
+                getDocs(query(collection(db, 'contacts'),  orderBy('createdAt', 'desc'))),
+            ]);
+
+            const postDocs  = posts.docs.map(d  => ({ id: d.id,  ...d.data() }));
+            const portDocs  = portItems.docs.map(d => ({ id: d.id, ...d.data() }));
+            const msgDocs   = messages.docs.map(d  => ({ id: d.id, ...d.data() }));
+
+            const published = postDocs.filter(p => p.published).length;
+            const unread    = msgDocs.filter(m  => !m.read).length;
+
+            // Stats
+            document.getElementById('statPosts').textContent    = published;
+            document.getElementById('statPortfolio').textContent = portDocs.length;
+            document.getElementById('statMessages').textContent  = unread;
+
+            // Unread badge
+            updateUnreadBadge(unread);
+
+            // Recent posts
+            const recentPosts = document.getElementById('recentPosts');
+            if (postDocs.length === 0) {
+                recentPosts.innerHTML = '<p class="dash-empty__text" style="padding:1rem 0; color:var(--text-dim); font-family:var(--font-display); font-size:0.7rem; letter-spacing:0.1em;">No posts yet</p>';
+            } else {
+                recentPosts.innerHTML = postDocs.slice(0, 5).map(p => `
+                    <div class="recent-item" data-id="${p.id}" data-type="post">
+                        <span class="recent-item__title">${p.title || 'Untitled'}</span>
+                        <span class="status-badge ${p.published ? 'status-badge--published' : 'status-badge--draft'}">
+                            ${p.published ? 'Published' : 'Draft'}
+                        </span>
+                    </div>`).join('');
+
+                recentPosts.querySelectorAll('.recent-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        openEditor(postDocs.find(p => p.id === el.dataset.id));
+                        showPanel('editor');
+                    });
+                });
+            }
+
+            // Recent messages
+            const recentMsgs = document.getElementById('recentMessages');
+            if (msgDocs.length === 0) {
+                recentMsgs.innerHTML = '<p class="dash-empty__text" style="padding:1rem 0; color:var(--text-dim); font-family:var(--font-display); font-size:0.7rem; letter-spacing:0.1em;">No messages yet</p>';
+            } else {
+                recentMsgs.innerHTML = msgDocs.slice(0, 5).map(m => `
+                    <div class="recent-item" data-id="${m.id}" data-type="msg">
+                        <span class="recent-item__title">${m.name || 'Unknown'}</span>
+                        <span class="recent-item__meta" style="color:${!m.read ? 'var(--orange-light)' : 'var(--text-dim)'}">
+                            ${!m.read ? 'Unread' : 'Read'}
+                        </span>
+                    </div>`).join('');
+
+                recentMsgs.querySelectorAll('.recent-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        showPanel('messages');
+                        loadMessages();
+                    });
+                });
+            }
+        }
+
+        function updateUnreadBadge(count) {
+            const badge = document.getElementById('unreadBadge');
+            const countEl = document.getElementById('unreadCount');
+            badge.textContent  = count;
+            countEl.textContent = `${count} unread`;
+            badge.classList.toggle('visible', count > 0);
+            countEl.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+
+        /* ═══════════════════════════════════
+           BLOG — LIST
+           ═══════════════════════════════════ */
+        let cachedPosts = [];
+
+        async function loadBlogList() {
+            const snap = await getDocs(query(collection(db, 'blog'), orderBy('createdAt', 'desc')));
+            cachedPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderBlogList(cachedPosts);
+        }
+
+        function renderBlogList(posts) {
+            const list = document.getElementById('blogPostList');
+
+            if (posts.length === 0) {
+                list.innerHTML = `<div class="dash-empty">
+                    <div class="dash-empty__icon">✎</div>
+                    <p class="dash-empty__text">No posts yet — create your first one</p>
+                </div>`;
+                return;
+            }
+
+            list.innerHTML = posts.map(p => `
+                <div class="post-list-item" data-id="${p.id}">
+                    <span class="post-list-item__title">${p.title || 'Untitled'}</span>
+                    <span class="post-list-item__cat">${p.category || ''}</span>
+                    <span class="post-list-item__date">${formatDate(p.createdAt)}</span>
+                    <span class="status-badge ${p.published ? 'status-badge--published' : 'status-badge--draft'}">
+                        ${p.published ? 'Published' : 'Draft'}
+                    </span>
+                </div>`).join('');
+
+            list.querySelectorAll('.post-list-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const post = cachedPosts.find(p => p.id === el.dataset.id);
+                    openEditor(post);
+                    showPanel('editor');
+                });
+            });
+        }
+
+        /* ═══════════════════════════════════
+           BLOG — EDITOR
+           ═══════════════════════════════════ */
+        let editingPostId   = null;   // null = new post
+        let coverImageUrl   = '';
+        let coverImagePath  = '';
+
+        function openNewEditor() {
+            editingPostId  = null;
+            coverImageUrl  = '';
+            coverImagePath = '';
+
+            document.getElementById('postTitle').value     = '';
+            document.getElementById('postExcerpt').value   = '';
+            document.getElementById('postContent').value   = '';
+            document.getElementById('postCategory').value  = '';
+            document.getElementById('postPublished').checked = false;
+            document.getElementById('publishLabel').textContent = 'Draft';
+            document.getElementById('blogCoverPreview').classList.remove('visible');
+            document.getElementById('blogCoverPreview').src = '';
+            document.getElementById('removeCoverBtn').style.display = 'none';
+            document.getElementById('editorDelete').style.display  = 'none';
+            document.getElementById('blogUploadProgress').classList.remove('visible');
+
+            showPanel('editor');
+        }
+
+        function openEditor(post) {
+            editingPostId  = post.id;
+            coverImageUrl  = post.coverImageUrl  || '';
+            coverImagePath = post.coverImagePath || '';
+
+            document.getElementById('postTitle').value     = post.title    || '';
+            document.getElementById('postExcerpt').value   = post.excerpt  || '';
+            document.getElementById('postContent').value   = post.content  || '';
+            document.getElementById('postCategory').value  = post.category || '';
+            document.getElementById('postPublished').checked = !!post.published;
+            document.getElementById('publishLabel').textContent = post.published ? 'Published' : 'Draft';
+            document.getElementById('editorDelete').style.display = 'block';
+            document.getElementById('blogUploadProgress').classList.remove('visible');
+
+            if (coverImageUrl) {
+                const preview = document.getElementById('blogCoverPreview');
+                preview.src = coverImageUrl;
+                preview.classList.add('visible');
+                document.getElementById('removeCoverBtn').style.display = 'block';
+            } else {
+                document.getElementById('blogCoverPreview').classList.remove('visible');
+                document.getElementById('removeCoverBtn').style.display = 'none';
+            }
+        }
+
+        // Back button
+        document.getElementById('editorBack').addEventListener('click', () => {
+            showPanel('blog');
+            loadBlogList();
+        });
+
+        // Publish toggle label
+        document.getElementById('postPublished').addEventListener('change', function () {
+            document.getElementById('publishLabel').textContent = this.checked ? 'Published' : 'Draft';
+        });
+
+        // ── TOOLBAR ──
+        const contentArea = document.getElementById('postContent');
+
+        document.getElementById('editorToolbar').addEventListener('click', e => {
+            const btn = e.target.closest('.toolbar-btn');
+            if (!btn) return;
+            const action = btn.dataset.action;
+
+            const actions = {
+                bold:    () => wrap('<strong>', '</strong>'),
+                italic:  () => wrap('<em>', '</em>'),
+                h2:      () => wrap('<h2>', '</h2>'),
+                h3:      () => wrap('<h3>', '</h3>'),
+                quote:   () => wrap('<blockquote>', '</blockquote>'),
+                ul:      () => wrap('<ul>\n  <li>', '</li>\n</ul>'),
+                p:       () => wrap('<p>', '</p>'),
+                hr:      () => insertAtCursor('\n<hr>\n'),
+                link:    () => {
+                    const url = prompt('URL (include https://):');
+                    if (url) wrap(`<a href="${url}">`, '</a>');
+                },
+                preview: () => showPreview(),
+            };
+
+            if (actions[action]) actions[action]();
+        });
+
+        function wrap(before, after) {
+            const start = contentArea.selectionStart;
+            const end   = contentArea.selectionEnd;
+            const sel   = contentArea.value.substring(start, end);
+            const ins   = before + sel + after;
+            contentArea.value =
+                contentArea.value.substring(0, start) + ins +
+                contentArea.value.substring(end);
+            const pos = sel.length > 0
+                ? start + ins.length
+                : start + before.length;
+            contentArea.setSelectionRange(pos, pos);
+            contentArea.focus();
+        }
+
+        function insertAtCursor(text) {
+            const pos = contentArea.selectionStart;
+            contentArea.value =
+                contentArea.value.substring(0, pos) + text +
+                contentArea.value.substring(pos);
+            contentArea.setSelectionRange(pos + text.length, pos + text.length);
+            contentArea.focus();
+        }
+
+        // ── PREVIEW ──
+        document.getElementById('previewClose').addEventListener('click', () => {
+            document.getElementById('previewModal').style.display = 'none';
+        });
+
+        function showPreview() {
+            document.getElementById('previewContent').innerHTML =
+                document.getElementById('postContent').value || '<p>Nothing to preview yet.</p>';
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        // ── COVER IMAGE UPLOAD ──
+        const coverUploadArea = document.getElementById('blogCoverUploadArea');
+        const coverFileInput  = document.getElementById('blogCoverFile');
+        const coverPreview    = document.getElementById('blogCoverPreview');
+        const progressWrap    = document.getElementById('blogUploadProgress');
+        const progressBar     = document.getElementById('blogProgressBar');
+        const progressLabel   = document.getElementById('blogProgressLabel');
+
+        coverUploadArea.addEventListener('click', () => coverFileInput.click());
+        coverFileInput.addEventListener('change', () => {
+            const file = coverFileInput.files[0];
+            if (!file) return;
+            if (file.size > 3 * 1024 * 1024) {
+                window.RKUtils?.showToast('Image must be under 3MB', 'error');
+                return;
+            }
+            uploadCoverImage(file);
+        });
+
+        function uploadCoverImage(file) {
+            const path = `blog-images/${Date.now()}_${file.name}`;
+            const task = uploadBytesResumable(ref(storage, path), file);
+
+            progressWrap.classList.add('visible');
+            progressBar.style.width = '0%';
+
+            task.on('state_changed',
+                snap => {
+                    const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+                    progressBar.style.width = pct + '%';
+                    progressLabel.textContent = `Uploading… ${pct}%`;
+                },
+                err => {
+                    progressWrap.classList.remove('visible');
+                    window.RKUtils?.showToast('Upload failed: ' + err.message, 'error');
+                },
+                async () => {
+                    coverImageUrl  = await getDownloadURL(task.snapshot.ref);
+                    coverImagePath = path;
+                    progressWrap.classList.remove('visible');
+                    coverPreview.src = coverImageUrl;
+                    coverPreview.classList.add('visible');
+                    document.getElementById('removeCoverBtn').style.display = 'block';
+                    window.RKUtils?.showToast('Cover uploaded');
+                }
+            );
+        }
+
+        document.getElementById('removeCoverBtn').addEventListener('click', () => {
+            coverImageUrl  = '';
+            coverImagePath = '';
+            coverPreview.classList.remove('visible');
+            coverPreview.src = '';
+            document.getElementById('removeCoverBtn').style.display = 'none';
+        });
+
+        // ── SAVE POST ──
+        document.getElementById('editorSave').addEventListener('click', savePost);
+
+        async function savePost() {
+            const title     = document.getElementById('postTitle').value.trim();
+            const excerpt   = document.getElementById('postExcerpt').value.trim();
+            const content   = document.getElementById('postContent').value.trim();
+            const category  = document.getElementById('postCategory').value.trim();
+            const published = document.getElementById('postPublished').checked;
+
+            if (!title) {
+                document.getElementById('postTitle').focus();
+                window.RKUtils?.showToast('Title is required', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('editorSave');
+            btn.disabled    = true;
+            btn.textContent = 'Saving…';
+
+            const payload = {
+                title, excerpt, content, category, published,
+                coverImageUrl, coverImagePath,
+                updatedAt: serverTimestamp(),
+            };
+
+            try {
+                if (editingPostId) {
+                    await updateDoc(doc(db, 'blog', editingPostId), payload);
+                } else {
+                    payload.createdAt = serverTimestamp();
+                    const ref = await addDoc(collection(db, 'blog'), payload);
+                    editingPostId = ref.id;
+                    document.getElementById('editorDelete').style.display = 'block';
+                }
+                window.RKUtils?.showToast(published ? 'Post published' : 'Draft saved');
+                loadOverview();
+            } catch (err) {
+                window.RKUtils?.showToast('Save failed: ' + err.message, 'error');
+            } finally {
+                btn.disabled    = false;
+                btn.textContent = 'Save Post';
+            }
+        }
+
+        // ── DELETE POST ──
+        document.getElementById('editorDelete').addEventListener('click', async () => {
+            if (!editingPostId) return;
+            if (!confirm('Delete this post? This cannot be undone.')) return;
+
+            try {
+                await deleteDoc(doc(db, 'blog', editingPostId));
+                if (coverImagePath) {
+                    try { await deleteObject(ref(storage, coverImagePath)); } catch {}
+                }
+                window.RKUtils?.showToast('Post deleted');
+                showPanel('blog');
+                loadBlogList();
+                loadOverview();
+            } catch (err) {
+                window.RKUtils?.showToast('Delete failed', 'error');
+            }
+        });
+
+        /* ═══════════════════════════════════
+           PORTFOLIO
+           ═══════════════════════════════════ */
+        const fileInput    = document.getElementById('portfolioFile');
+        const dropZone     = document.getElementById('fileDropZone');
+        const selectedName = document.getElementById('fileSelectedName');
+
+        dropZone.addEventListener('click',     () => fileInput.click());
+        dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop',      e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files[0]) {
+                fileInput.files = e.dataTransfer.files;
+                selectedName.textContent = e.dataTransfer.files[0].name;
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            selectedName.textContent = fileInput.files[0]?.name || '';
+        });
+
+        document.getElementById('portfolioUploadBtn').addEventListener('click', async () => {
+            const file  = fileInput.files[0];
+            const title = document.getElementById('portfolioTitle').value.trim();
+
+            if (!file) {
+                window.RKUtils?.showToast('Choose an image first', 'error');
+                return;
+            }
+            if (file.size > 3 * 1024 * 1024) {
+                window.RKUtils?.showToast('Image must be under 3MB', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('portfolioUploadBtn');
+            btn.disabled    = true;
+            btn.textContent = 'Uploading…';
+
+            const path = `portfolio-images/${Date.now()}_${file.name}`;
+            const task = uploadBytesResumable(ref(storage, path), file);
+            const progressWrap = document.getElementById('portProgressWrap');
+            const pBar  = document.getElementById('portProgressBar');
+            const pLabel = document.getElementById('portProgressLabel');
+
+            progressWrap.classList.add('visible');
+
+            task.on('state_changed',
+                snap => {
+                    const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+                    pBar.style.width   = pct + '%';
+                    pLabel.textContent = `Uploading… ${pct}%`;
+                },
+                err => {
+                    progressWrap.classList.remove('visible');
+                    window.RKUtils?.showToast('Upload failed', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Upload Item';
+                },
+                async () => {
+                    const url = await getDownloadURL(task.snapshot.ref);
+                    await addDoc(collection(db, 'portfolio'), {
+                        title:       document.getElementById('portfolioTitle').value.trim(),
+                        description: document.getElementById('portfolioDesc').value.trim(),
+                        category:    document.getElementById('portfolioCategory').value.trim(),
+                        imageUrl:    url,
+                        imagePath:   path,
+                        createdAt:   serverTimestamp(),
+                    });
+
+                    progressWrap.classList.remove('visible');
+                    pBar.style.width = '0%';
+                    fileInput.value  = '';
+                    selectedName.textContent = '';
+                    document.getElementById('portfolioTitle').value    = '';
+                    document.getElementById('portfolioDesc').value     = '';
+                    document.getElementById('portfolioCategory').value = '';
+                    btn.disabled    = false;
+                    btn.textContent = 'Upload Item';
+
+                    window.RKUtils?.showToast('Item uploaded');
+                    loadPortfolioList();
+                    loadOverview();
+                }
+            );
+        });
+
+        async function loadPortfolioList() {
+            const snap  = await getDocs(query(collection(db, 'portfolio'), orderBy('createdAt', 'desc')));
+            const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderPortfolioGrid(items);
+        }
+
+        function renderPortfolioGrid(items) {
+            const grid = document.getElementById('dashPortfolioGrid');
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="dash-empty" style="grid-column:1/-1;">
+                    <div class="dash-empty__icon">◰</div>
+                    <p class="dash-empty__text">No items yet — upload your first one above</p>
+                </div>`;
+                return;
+            }
+            grid.innerHTML = items.map(item => `
+                <div class="dash-portfolio-item">
+                    <div class="dash-portfolio-item__img">
+                        <img src="${item.imageUrl}" alt="${item.title || ''}" loading="lazy">
+                    </div>
+                    <div class="dash-portfolio-item__body">
+                        <span class="dash-portfolio-item__title">${item.title || '—'}</span>
+                        <button class="dash-portfolio-item__delete" data-id="${item.id}" data-path="${item.imagePath || ''}">
+                            Delete
+                        </button>
+                    </div>
+                </div>`).join('');
+
+            grid.querySelectorAll('.dash-portfolio-item__delete').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('Delete this portfolio item?')) return;
+                    try {
+                        await deleteDoc(doc(db, 'portfolio', btn.dataset.id));
+                        if (btn.dataset.path) {
+                            try { await deleteObject(ref(storage, btn.dataset.path)); } catch {}
+                        }
+                        window.RKUtils?.showToast('Item deleted');
+                        loadPortfolioList();
+                        loadOverview();
+                    } catch {
+                        window.RKUtils?.showToast('Delete failed', 'error');
+                    }
+                });
+            });
+        }
+
+        /* ═══════════════════════════════════
+           MESSAGES
+           ═══════════════════════════════════ */
+        async function loadMessages() {
+            const snap = await getDocs(query(collection(db, 'contacts'), orderBy('createdAt', 'desc')));
+            const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderMessages(msgs);
+            updateUnreadBadge(msgs.filter(m => !m.read).length);
+        }
+
+        function renderMessages(msgs) {
+            const list = document.getElementById('messageList');
+
+            if (msgs.length === 0) {
+                list.innerHTML = `<div class="dash-empty">
+                    <div class="dash-empty__icon">◻</div>
+                    <p class="dash-empty__text">No messages yet</p>
+                </div>`;
+                return;
+            }
+
+            list.innerHTML = msgs.map(m => `
+                <div class="message-item ${!m.read ? 'unread' : ''}" data-id="${m.id}">
+                    <div class="message-item__header">
+                        <span class="message-item__from">${m.name || 'Unknown'}</span>
+                        <span class="message-item__subject">${m.subject || '(no subject)'}</span>
+                        <span class="message-item__date">${formatDate(m.createdAt)}</span>
+                        ${!m.read ? '<span class="status-badge status-badge--unread">Unread</span>' : ''}
+                    </div>
+                    <div class="message-item__body">
+                        <p class="message-item__content">${m.message || ''}</p>
+                        <div class="message-item__actions">
+                            <a class="msg-action-btn"
+                               href="mailto:${m.email || ''}?subject=Re: ${encodeURIComponent(m.subject || '')}&body=Hi ${encodeURIComponent(m.name || '')},%0A%0A">
+                               Reply via Email
+                            </a>
+                            <button class="msg-action-btn msg-toggle-read"
+                                    data-id="${m.id}"
+                                    data-read="${m.read ? 'true' : 'false'}">
+                                Mark as ${m.read ? 'Unread' : 'Read'}
+                            </button>
+                            <button class="msg-action-btn msg-action-btn--delete msg-delete"
+                                    data-id="${m.id}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>`).join('');
+
+            // Expand/collapse on header click
+            list.querySelectorAll('.message-item__header').forEach(header => {
+                header.addEventListener('click', async () => {
+                    const item = header.closest('.message-item');
+                    const id   = item.dataset.id;
+                    const wasExpanded = item.classList.contains('expanded');
+
+                    list.querySelectorAll('.message-item').forEach(i => i.classList.remove('expanded'));
+                    if (!wasExpanded) {
+                        item.classList.add('expanded');
+                        // Mark as read
+                        if (item.classList.contains('unread')) {
+                            try {
+                                await updateDoc(doc(db, 'contacts', id), { read: true });
+                                item.classList.remove('unread');
+                                item.querySelector('.status-badge')?.remove();
+                                updateUnreadBadge(list.querySelectorAll('.message-item.unread').length);
+                            } catch {}
+                        }
+                    }
+                });
+            });
+
+            // Toggle read/unread
+            list.querySelectorAll('.msg-toggle-read').forEach(btn => {
+                btn.addEventListener('click', async e => {
+                    e.stopPropagation();
+                    const isRead = btn.dataset.read === 'true';
+                    try {
+                        await updateDoc(doc(db, 'contacts', btn.dataset.id), { read: !isRead });
+                        loadMessages();
+                    } catch {
+                        window.RKUtils?.showToast('Update failed', 'error');
+                    }
+                });
+            });
+
+            // Delete message
+            list.querySelectorAll('.msg-delete').forEach(btn => {
+                btn.addEventListener('click', async e => {
+                    e.stopPropagation();
+                    if (!confirm('Delete this message?')) return;
+                    try {
+                        await deleteDoc(doc(db, 'contacts', btn.dataset.id));
+                        window.RKUtils?.showToast('Message deleted');
+                        loadMessages();
+                    } catch {
+                        window.RKUtils?.showToast('Delete failed', 'error');
+                    }
+                });
+            });
+        }
+
+        /* ═══════════════════════════════════
+           UTILITIES
+           ═══════════════════════════════════ */
+        function formatDate(ts) {
+            if (!ts) return '';
+            const d = ts.toDate ? ts.toDate() : new Date(ts);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+    </script>
+
+</body>
+</html>
