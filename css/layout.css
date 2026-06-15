@@ -409,14 +409,14 @@ section,
 
 .author-photo {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 4; /* changed experimentally from 3/4 to 4/4/ */
     object-fit: cover;
     object-position: top center;
     display: block;
 }
 
 .author-photo-placeholder {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 4; /* changed experimentally from 3/4 to 4/4/ */
     position: relative;
     overflow: hidden;
 }
