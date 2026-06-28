@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio — Roy M. Kerns</title>
-    <meta name="description" content="Art, illustrations, and behind-the-scenes content from Roy M. Kerns — author of the Xerxes Trilogy.">
+    <meta name="viewport" content="width=device-width, intial scale=1.0">
+    <title>Portfolio - Roy M. Kerns</title>
+    <meta name="description" content="Character profiles and art from the Xerxes Trilogy by Roy M. Kerns.">
     <meta name="theme-color" content="#05050A">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lora:ital,wght@0,400;0,500;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/styles.css">
@@ -61,10 +61,9 @@
             letter-spacing: 0.25em;
             color: var(--text-dim);
             margin-bottom: 2rem;
-            min-height: 1rem;
         }
 
-        /* ── GRID — 3 columns desktop, 2 tablet, 1 mobile ── */
+        /* ── GRID — 3 col desktop, 2 tablet, 1 mobile ── */
         .portfolio-grid {
             grid-template-columns: repeat(3, 1fr);
             margin-bottom: 6rem;
@@ -91,6 +90,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-sub);
             transition: border-color 0.3s ease;
+            position: relative;
         }
 
         .portfolio-item:hover .portfolio-item__img {
@@ -102,26 +102,27 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, filter 0.3s ease;
         }
 
-            /* Hide broken image icon — container bg shows instead */
             .portfolio-item__img img.broken {
                 opacity: 0;
             }
 
         .portfolio-item:hover .portfolio-item__img img {
-            transform: scale(1.05);
+            transform: scale(1.04);
         }
 
-        /* Hover overlay with zoom icon */
+        /* Hover overlay */
         .portfolio-item__overlay {
             position: absolute;
             inset: 0;
-            background: rgba(5, 5, 10, 0.5);
+            background: rgba(5, 5, 10, 0.65);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 0.5rem;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -130,17 +131,36 @@
             opacity: 1;
         }
 
+        .overlay-label {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--text);
+            text-transform: uppercase;
+            text-align: center;
+            padding-inline: 0.75rem;
+        }
+
+        .overlay-sublabel {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--orange);
+            letter-spacing: 0.12em;
+        }
+
         .overlay-icon {
-            width: 44px;
-            height: 44px;
-            border: 1px solid rgba(255,255,255,0.4);
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255,255,255,0.35);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text);
+            margin-top: 0.25rem;
         }
 
+        /* Card body */
         .portfolio-item__cat {
             font-family: var(--font-display);
             font-size: 0.58rem;
@@ -157,15 +177,10 @@
             line-height: 1.3;
         }
 
-        .portfolio-item__desc {
-            font-family: var(--font-body);
-            font-size: 0.8rem;
+        .portfolio-item__subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem;
             color: var(--text-muted);
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         /* Empty state */
@@ -189,8 +204,394 @@
             color: var(--text-dim);
         }
 
-        /* ── LIGHTBOX ── */
-        .lightbox {
+        /* ══════════════════════════════════════
+           PROFILE MODAL — XERXES LLC EMPLOYEE FILE
+           ══════════════════════════════════════ */
+        .profile-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+            .profile-modal[hidden] {
+                display: none;
+            }
+
+        .profile-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 3, 8, 0.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            cursor: pointer;
+        }
+
+        .profile-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 860px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+        }
+
+            /* Scrollbar inside card */
+            .profile-card::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .profile-card::-webkit-scrollbar-track {
+                background: var(--bg);
+            }
+
+            .profile-card::-webkit-scrollbar-thumb {
+                background: var(--purple-dim);
+            }
+
+        /* ── FILE HEADER ── */
+        .profile-file-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.5rem;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-sub);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .file-header__org {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            color: var(--purple-light);
+        }
+
+        .file-header__title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+        }
+
+        .file-header__stamp {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.22em;
+            color: var(--orange);
+            border: 1px solid var(--orange);
+            padding: 0.2rem 0.6rem;
+            opacity: 0.9;
+        }
+
+        .file-header__stamp--classified {
+            color: var(--text-dim);
+            border-color: var(--text-dim);
+        }
+
+        /* ── CLOSE BUTTON ── */
+        .profile-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            z-index: 2;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-sub);
+            background: rgba(5,5,10,0.8);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+            .profile-close:hover {
+                border-color: var(--orange);
+                color: var(--text);
+            }
+
+        /* ── MAIN BODY ── */
+        .profile-body {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 0;
+        }
+
+        /* Left — portrait + id */
+        .profile-portrait-col {
+            background: var(--bg);
+            border-right: 1px solid var(--border-sub);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .profile-portrait {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            display: block;
+            border: 1px solid var(--border-sub);
+        }
+
+        .profile-portrait-placeholder {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-sub);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .profile-portrait-placeholder svg {
+                opacity: 0.2;
+            }
+
+            .profile-portrait-placeholder span {
+                font-family: 'Share Tech Mono', monospace;
+                font-size: 0.55rem;
+                letter-spacing: 0.3em;
+                color: var(--text-dim);
+                text-transform: uppercase;
+            }
+
+        /* File ID block */
+        .profile-file-id {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            border-top: 1px solid var(--border-sub);
+            padding-top: 1rem;
+        }
+
+        .file-id__label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.32em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .file-id__value {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+
+        /* Barcode decoration */
+        .file-barcode {
+            display: flex;
+            gap: 2px;
+            height: 28px;
+            align-items: stretch;
+            margin-top: 0.25rem;
+            opacity: 0.3;
+        }
+
+        .barcode-bar {
+            background: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* Right — data */
+        .profile-data-col {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Name block */
+        .profile-name-block {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-sub);
+        }
+
+        .profile-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            letter-spacing: 0.04em;
+            color: var(--text);
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-nickname {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--orange-light);
+            letter-spacing: 0.08em;
+        }
+
+        .profile-jobtitle {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            color: var(--purple-light);
+            text-transform: uppercase;
+            margin-top: 0.4rem;
+        }
+
+        /* Field rows */
+        .profile-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 1.5rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-sub);
+        }
+
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .profile-field__label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.52rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .profile-field__value {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Section headers */
+        .profile-section {
+            margin-bottom: 1rem;
+        }
+
+        .profile-section__title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.35em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .profile-section__title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border-sub);
+            }
+
+        .profile-section__list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+            .profile-section__list li {
+                font-family: var(--font-body);
+                font-size: 0.83rem;
+                color: var(--text-muted);
+                line-height: 1.5;
+                padding-left: 1rem;
+                position: relative;
+            }
+
+                .profile-section__list li::before {
+                    content: '—';
+                    position: absolute;
+                    left: 0;
+                    color: var(--text-dim);
+                    font-family: 'Share Tech Mono', monospace;
+                }
+
+        /* ESP abilities — tagged pills */
+        .esp-abilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .esp-pill {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            padding: 0.25rem 0.65rem;
+            border: 1px solid rgba(138,53,232,0.35);
+            color: var(--purple-light);
+            background: rgba(138,53,232,0.08);
+        }
+
+            .esp-pill.redacted {
+                border-color: var(--text-dim);
+                color: transparent;
+                background: var(--text-dim);
+                user-select: none;
+            }
+
+        /* ── REDACTED / UNKNOWN STYLES ── */
+        .redacted-text {
+            background: var(--text);
+            color: transparent;
+            border-radius: 1px;
+            user-select: none;
+            letter-spacing: 0;
+            display: inline-block;
+            padding-inline: 2px;
+        }
+
+        .unknown-text {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-dim);
+            font-style: normal;
+        }
+
+        /* ── FILE NOTES ── */
+        .profile-notes {
+            margin-top: 0;
+            background: var(--bg-elevated);
+            border-top: 2px solid var(--orange);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .profile-notes__header {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.35em;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-notes__text {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-style: italic;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        /* ── SIMPLE LIGHTBOX (for non-profile art items) ── */
+        .art-lightbox {
             position: fixed;
             inset: 0;
             z-index: 800;
@@ -200,86 +601,37 @@
             padding: 2rem;
         }
 
-            .lightbox[hidden] {
+            .art-lightbox[hidden] {
                 display: none;
             }
 
-        .lightbox__backdrop {
+        .art-lightbox__backdrop {
             position: absolute;
             inset: 0;
-            background: rgba(5, 5, 10, 0.94);
+            background: rgba(5,5,10,0.94);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             cursor: pointer;
         }
 
-        .lightbox__panel {
+        .art-lightbox__panel {
             position: relative;
             z-index: 1;
             display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 2.5rem;
+            grid-template-columns: 1fr 260px;
+            gap: 2rem;
             align-items: center;
-            max-width: 1060px;
+            max-width: 900px;
             width: 100%;
-            max-height: 90vh;
         }
 
-        .lightbox__img-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            max-height: 82vh;
-        }
-
-        .lightbox__img {
+        .art-lightbox__img {
             max-width: 100%;
             max-height: 82vh;
             object-fit: contain;
             display: block;
         }
 
-        /* Prev / next arrows */
-        .lightbox__nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 2;
-            width: 44px;
-            height: 44px;
-            border: 1px solid var(--border);
-            background: rgba(5,5,10,0.7);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-            .lightbox__nav:hover {
-                border-color: var(--purple);
-                color: var(--text);
-                background: rgba(138,53,232,0.15);
-            }
-
-            .lightbox__nav:disabled {
-                opacity: 0.2;
-                cursor: default;
-                pointer-events: none;
-            }
-
-        .lightbox__nav--prev {
-            left: -56px;
-        }
-
-        .lightbox__nav--next {
-            right: -56px;
-        }
-
-        /* Close button */
-        .lightbox__close {
+        .art-lightbox__close {
             position: fixed;
             top: 1.5rem;
             right: 1.5rem;
@@ -296,21 +648,18 @@
             transition: all 0.25s ease;
         }
 
-            .lightbox__close:hover {
+            .art-lightbox__close:hover {
                 border-color: var(--orange);
                 color: var(--text);
             }
 
-        /* Info panel */
-        .lightbox__info {
+        .art-lightbox__info {
             display: flex;
             flex-direction: column;
-            gap: 0.85rem;
-            max-height: 82vh;
-            overflow-y: auto;
+            gap: 0.75rem;
         }
 
-        .lightbox__cat {
+        .art-lightbox__cat {
             font-family: var(--font-display);
             font-size: 0.6rem;
             letter-spacing: 0.38em;
@@ -318,66 +667,62 @@
             text-transform: uppercase;
         }
 
-        .lightbox__title {
+        .art-lightbox__title {
             font-family: var(--font-display);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             letter-spacing: 0.04em;
             color: var(--text);
-            line-height: 1.2;
         }
 
-        .lightbox__desc {
+        .art-lightbox__desc {
             font-family: var(--font-body);
-            font-size: 0.95rem;
-            line-height: 1.85;
+            font-size: 0.92rem;
+            line-height: 1.8;
             color: var(--text-muted);
         }
 
-        .lightbox__counter {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.28em;
-            color: var(--text-dim);
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-sub);
-        }
-
-        /* Responsive lightbox */
-        @media (max-width: 800px) {
-            .lightbox__panel {
+        /* ── RESPONSIVE PROFILE CARD ── */
+        @media (max-width: 700px) {
+            .profile-body {
                 grid-template-columns: 1fr;
-                overflow-y: auto;
-                max-height: 90vh;
-                gap: 1.5rem;
             }
 
-            .lightbox__img {
-                max-height: 55vw;
+            .profile-portrait-col {
+                border-right: none;
+                border-bottom: 1px solid var(--border-sub);
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1.25rem;
             }
 
-            .lightbox__nav--prev {
-                left: 0.25rem;
+            .profile-portrait,
+            .profile-portrait-placeholder {
+                width: 120px;
+                flex-shrink: 0;
             }
 
-            .lightbox__nav--next {
-                right: 0.25rem;
+            .profile-fields {
+                grid-template-columns: 1fr;
             }
 
-            .lightbox__info {
-                max-height: none;
+            .art-lightbox__panel {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
-            .lightbox {
-                padding: 1rem;
+            .profile-modal {
+                padding: 0;
+            }
+
+            .profile-card {
+                max-height: 100vh;
+                border: none;
             }
         }
     </style>
 </head>
 <body>
-
     <canvas id="starfield" aria-hidden="true"></canvas>
 
     <!-- NAV -->
@@ -408,34 +753,54 @@
         <div class="container">
 
             <header class="portfolio-header reveal">
-                
+                <span class="section-label">Hymns of the Hadrian Quadrant</span>
                 <h1 class="section-title">Portfolio</h1>
                 <div class="title-line"></div>
                 <p class="section-intro" style="margin-top:1.5rem; max-width:520px;">
-                    Art, character illustrations, cover concepts, and behind-the-scenes content
-                    from the world of the Xerxes Trilogy. Click to expand and view the full artwork!
+                    Art and character profiles from the world of the Xerxes Trilogy.
+                    Click any portrait to access the Xerxes LLC employee file.
                 </p>
             </header>
 
-            <!-- FILTER BAR — built by JS from item categories -->
             <div class="filter-bar" id="filterBar" role="group" aria-label="Filter by category"></div>
-
-            <!-- ITEM COUNT -->
             <p class="portfolio-count" id="portfolioCount" aria-live="polite"></p>
-
-            <!-- GRID -->
             <div class="portfolio-grid" id="portfolioGrid"></div>
 
         </div>
     </main>
 
-    <!-- LIGHTBOX -->
-    <div class="lightbox" id="lightbox" hidden
-         role="dialog" aria-modal="true" aria-label="Portfolio item viewer">
+    <!-- ═══════════════════════════════════
+         XERXES LLC EMPLOYEE PROFILE MODAL
+         ═══════════════════════════════════ -->
+    <div class="profile-modal" id="profileModal" hidden
+         role="dialog" aria-modal="true" aria-label="Employee profile">
 
-        <div class="lightbox__backdrop" id="lightboxBackdrop"></div>
+        <div class="profile-modal__backdrop" id="profileBackdrop"></div>
 
-        <button class="lightbox__close" id="lightboxClose" aria-label="Close">
+        <div class="profile-card" id="profileCard">
+
+            <button class="profile-close" id="profileClose" aria-label="Close profile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <!-- Populated by JS -->
+            <div id="profileContent"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         SIMPLE ART LIGHTBOX
+         ═══════════════════════════════════ -->
+    <div class="art-lightbox" id="artLightbox" hidden
+         role="dialog" aria-modal="true" aria-label="Artwork viewer">
+
+        <div class="art-lightbox__backdrop" id="artBackdrop"></div>
+
+        <button class="art-lightbox__close" id="artClose" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -443,28 +808,12 @@
             </svg>
         </button>
 
-        <div class="lightbox__panel">
-            <div class="lightbox__img-wrap">
-                <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" aria-label="Previous">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                </button>
-                <img class="lightbox__img" id="lbImg" src="" alt="">
-                <button class="lightbox__nav lightbox__nav--next" id="lbNext" aria-label="Next">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="lightbox__info">
-                <span class="lightbox__cat" id="lbCat"></span>
-                <h2 class="lightbox__title" id="lbTitle"></h2>
-                <p class="lightbox__desc" id="lbDesc"></p>
-                <p class="lightbox__counter" id="lbCounter"></p>
+        <div class="art-lightbox__panel">
+            <img class="art-lightbox__img" id="artLbImg" src="" alt="">
+            <div class="art-lightbox__info">
+                <span class="art-lightbox__cat" id="artLbCat"></span>
+                <h2 class="art-lightbox__title" id="artLbTitle"></h2>
+                <p class="art-lightbox__desc" id="artLbDesc"></p>
             </div>
         </div>
     </div>
@@ -502,280 +851,486 @@
 
     <script src="../js/script.js"></script>
     <script>
-        /* ══════════════════════════════════════════════════════════════
-           PORTFOLIO ITEMS
-           ══════════════════════════════════════════════════════════════
+    /* ══════════════════════════════════════════════════════════════════
+       PORTFOLIO ITEMS
+       ══════════════════════════════════════════════════════════════════
 
-           HOW TO ADD A NEW ITEM:
-           1. Drop the image file into the  assets/portfolio/  folder
-           2. Copy one of the objects below and fill in your details
-           3. Save → push to GitHub → Vercel redeploys in ~30 seconds
+       type: 'profile' → opens the Xerxes LLC employee file popup
+       type: 'art'     → opens the simple image lightbox
 
-           FIELDS:
-             title       — displayed under the image and in the lightbox
-             category    — used by the filter bar; keep spelling consistent
-             description — shown in the lightbox (can be empty string "")
-             image       — path to the image file (relative to this html/ folder)
-             alt         — screen-reader description of the image
+       HOW TO ADD A NEW CHARACTER PROFILE:
+         Copy one of the profile objects below, fill in the fields.
+         Set type: 'profile'.
 
-           CATEGORIES IN USE (keep these consistent):
-             "Cover Art"        "Character Art"
-             "Concept Art"      "Behind the Scenes"
-        ══════════════════════════════════════════════════════════════ */
-        const PORTFOLIO_ITEMS = [
+       HOW TO ADD REGULAR ARTWORK:
+         Use type: 'art', fill in title/category/description/image.
 
-            {
-                title:       "The Azar Project — Cover Art",
-                category:    "Cover Art",
-                description: "Cover art for Book One of the Xerxes Trilogy.",
-                image:       "../images/AzarCover.jpg",
-                alt:         "The Azar Project cover art"
-            },
-            {
-                title:       "Character Sketch — Dr. Mayakannan",
-                category:    "Character Art",
-                description: "Initial character concept for Dr. Mayakannan, lead scientist aboard Xerxes Station.",
-                image:       "../images/mayakannan-sketch.jpg",
-                alt:         "Dr. Mayakannan character sketch"
-            },
-            {
-                title:       "Character Sketch — Quiz",
-                category:    "Character Art",
-                description: "Psychic former corporate intelligence goon for ExoLink.",
-                image:       "../images/quiz-sketch.jpg",
-                alt:         "Quiz character sketch"
-            },
-            {
-                title:       "Xerxes Station — Concept",
-                category:    "Concept Art",
-                description: "Early concept exploration for Xerxes Station.",
-                image:       "../images/xerxes-station-concept.jpg",
-                alt:         "Xerxes Station concept art"
-            },
-            {
-                title:       "Character Sketch — Silvestre",
-                category:    "Character Art",
-                description: "Xerxes Station's head custodian and Vega's father.",
-                image:       "../images/silvestre-sketch.jpg",
-                alt:         "Silvestre character sketch"
-            },
-            {
-                title:       "Behind the Scenes — Early Notes",
-                category:    "Behind the Scenes",
-                description: "A look at early worldbuilding notes from the first draft of The Azar Project.",
-                image:       "../images/early-notes.jpg",
-                alt:         "Early worldbuilding notes"
-            },
+       IMAGES go in:  assets/portfolio/
+    ══════════════════════════════════════════════════════════════════ */
+    const PORTFOLIO_ITEMS = [
 
-            /*
-             * ── ADD MORE ITEMS BELOW ──
-             * {
-             *     title:       "",
-             *     category:    "",
-             *     description: "",
-             *     image:       "../assets/portfolio/your-filename.jpg",
-             *     alt:         ""
-             * },
-             */
+        /* ──────────────────────────────────────
+           CHARACTER PROFILES
+        ────────────────────────────────────── */
+        {
+            type:     'profile',
+            category: 'Command',
+            image:    '../images/mayakannan_profile.jpg',
+            alt:      'Dr. Sundaravalli Mayakannan',
 
-        ];
+            // ── Profile data ──
+            name:      'Dr. Sundaravalli Mayakannan',
+            nickname:  null,
+            jobTitle:  'Director & CEO',
+            fileId:    'XRX-0001-DIR',
+            stamp:     'ACTIVE',
+
+            dob:        '4 January 3937',
+            age:        '70 Years',
+            bloodType:  'O-',
+            homeworld:  'Atlas',
+
+            education: [
+                'Ph.D in Cosmology — Arc Institute of Technology, New Bogota, Atlas',
+                'MBA in Administration & Business Management — Bailai University, Trin, Entra',
+            ],
+            workHistory: [
+                'Adjunct Professor, Arc Institute of Technology',
+                'Postdoctoral Researcher, Arc Institute of Technology',
+                'Scientist → Senior Scientist, National Astronomical Observatory of New Bogota',
+            ],
+            qualifications: ['Python', 'C++', 'Machine Learning', 'Atlean Astronomical Society Membership'],
+            espAbilities:   null,
+
+            fileNotesFrom: 'FROM MYSELF',
+            fileNotes:     'I\'m so fucking tired.',
+        },
+
+        {
+            type:     'profile',
+            category: 'Operations',
+            image:    '../images/quiz_profile.jpg',
+            alt:      'Faustus J. Basra — Quiz',
+
+            name:      'Faustus J. Basra',
+            nickname:  '"Quiz"',
+            jobTitle:  'ESP Coordinator',
+            fileId:    'XRX-0034-ESP',
+            stamp:     'ACTIVE',
+
+            dob:        '1 February 3973',
+            age:        '34 Years',
+            bloodType:  'AB-',
+            homeworld:  'Karava',
+
+            education: [
+                { text: 'Work-sponsored', redacted: true },
+                'Matsuba ESP Academy, Korvossi, Noctus Prime',
+            ],
+            workHistory: [
+                { text: 'Specialist at ExoLink', redacted: true },
+            ],
+            qualifications: [
+                'Matsuba Academy-Licensed Private ESP Instructor',
+                { text: 'REDACTED QUALIFICATION', redacted: true },
+            ],
+            espAbilities: [
+                'Precognition',
+                'Postcognition',
+                'Psychokinesis',
+                { text: 'REDACTED', redacted: true },
+                'Psychometry',
+                'Telepathy',
+            ],
+
+            fileNotesFrom: 'FROM MANAGEMENT',
+            fileNotes:     'I am going to put him into a teeny tiny box and space him from the cargo airlock if he questions my decisions one more time.',
+        },
+
+        {
+            type:     'profile',
+            category: 'Crew',
+            image:    '../images/ves_profile.jpg',
+            alt:      'Silvestre Santos — Ves',
+
+            name:      'Silvestre Santos',
+            nickname:  '"Ves"',
+            jobTitle:  'Head Custodian',
+            fileId:    'XRX-0087-CUS',
+            stamp:     'ACTIVE',
+
+            dob:        '11 April 3976',
+            age:        '31 Years',
+            bloodType:  'O+',
+            homeworld:  'Atlas',
+
+            education: [
+                'GED',
+            ],
+            workHistory: [
+                'EVS Technician — Guerra Hospital, New Bogota, Atlas',
+                'Maintenance Staff — Merkin Retirement Facility, New Bogota, Atlas',
+            ],
+            qualifications: [
+                'Biohazard Cleaning Certification',
+                'Certified Custodial Technician',
+            ],
+            espAbilities: null,
+
+            fileNotesFrom: 'FROM MANAGEMENT',
+            fileNotes:     '• Put under mental health watch\n• Remind him of the fully paid leave and grief counseling services I\'ve offered that he keeps ignoring\n• Ask him to get to the bottom of whatever the hell keeps clogging my office toilet',
+        },
+
+        {
+            type:     'profile',
+            category: 'Classified',
+            image:    '../images/rj_profile.jpg',
+            alt:      'Roberta-Jacqueline Marsh — Robbie-Jack',
+
+            name:      'Roberta-Jacqueline Marsh',
+            nickname:  '"Robbie-Jack"',
+            jobTitle:  '[N.A.]',
+            fileId:    'XRX-????-???',
+            stamp:     'CLASSIFIED',
+
+            dob:        { text: 'UNKNOWN — September 3223', unknown: true },
+            age:        '26 Years',
+            bloodType:  { text: 'UNKNOWN', unknown: true },
+            homeworld:  'Earth',
+
+            education: [
+                { text: 'MA in [UNKNOWN] — Simmons University, Boston MA', unknown: true },
+            ],
+            workHistory: [
+                { text: 'UNKNOWN', unknown: true },
+            ],
+            qualifications: [
+                { text: 'UNKNOWN', unknown: true },
+            ],
+            espAbilities: null,
+
+            fileNotesFrom: 'FROM MANAGEMENT',
+            fileNotes:     'I\'m sorry we did this to you.',
+        },
+
+        /* ──────────────────────────────────────
+           ART ITEMS
+           (simple lightbox, no profile popup)
+        ────────────────────────────────────── */
+        {
+            type:        'art',
+            category:    'Cover Art',
+            title:       'The Azar Project — Cover WIP',
+            description: 'Work in progress cover art for Book One of the Xerxes Trilogy.',
+            image:       '../images/AzarCover.jpg',
+            alt:         'The Azar Project cover art work in progress',
+        },
+        {
+            type:        'art',
+            category:    'Concept Art',
+            title:       'Xerxes Station — Concept',
+            description: 'Early concept exploration for Xerxes Station in the Hadrian Quadrant.',
+            image:       '../assets/portfolio/xerxes-station-concept.jpg',
+            alt:         'Xerxes Station concept art',
+        },
+
+        /*
+         * ── ADD MORE ITEMS HERE ──
+         */
+    ];
 
 
-        /* ══════════════════════════════════════════════════════════════
-           EVERYTHING BELOW THIS LINE RUNS THE PAGE.
-           You generally don't need to edit anything below.
-        ══════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════════
+       PAGE LOGIC — nothing below needs editing for normal updates
+    ══════════════════════════════════════════════════════════════════ */
 
-        /* ── STATE ── */
-        let filtered      = [...PORTFOLIO_ITEMS];
-        let activeFilter  = 'All';
-        let lightboxIndex = 0;
+    let filtered     = [...PORTFOLIO_ITEMS];
+    let activeFilter = 'All';
 
-        /* ── DOM ── */
-        const grid     = document.getElementById('portfolioGrid');
-        const filterBar = document.getElementById('filterBar');
-        const countEl  = document.getElementById('portfolioCount');
-        const lightbox = document.getElementById('lightbox');
+    const grid      = document.getElementById('portfolioGrid');
+    const filterBar = document.getElementById('filterBar');
+    const countEl   = document.getElementById('portfolioCount');
 
-        /* ════════════
-           BUILD FILTERS
-        ════════════ */
-        function buildFilters() {
-            // Collect unique categories in the order they appear
-            const cats = ['All', ...new Set(
-                PORTFOLIO_ITEMS.map(i => i.category).filter(Boolean)
-            )];
+    /* ── FILTERS ── */
+    function buildFilters() {
+        const cats = ['All', ...new Set(PORTFOLIO_ITEMS.map(i => i.category).filter(Boolean))];
 
-            filterBar.innerHTML = cats.map(cat => `
-                <button class="filter-btn${cat === 'All' ? ' active' : ''}"
-                        data-cat="${cat}"
-                        aria-pressed="${cat === 'All'}">
-                    ${cat}
-                </button>`
-            ).join('');
+        filterBar.innerHTML = cats.map(cat => `
+            <button class="filter-btn${cat === 'All' ? ' active' : ''}"
+                    data-cat="${cat}" aria-pressed="${cat === 'All'}">
+                ${cat}
+            </button>`
+        ).join('');
 
-            filterBar.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterBar.querySelectorAll('.filter-btn').forEach(b => {
-                        b.classList.remove('active');
-                        b.setAttribute('aria-pressed', 'false');
-                    });
-                    btn.classList.add('active');
-                    btn.setAttribute('aria-pressed', 'true');
-
-                    activeFilter = btn.dataset.cat;
-                    filtered = activeFilter === 'All'
-                        ? [...PORTFOLIO_ITEMS]
-                        : PORTFOLIO_ITEMS.filter(i => i.category === activeFilter);
-
-                    renderGrid();
+        filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBar.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
                 });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+                activeFilter = btn.dataset.cat;
+                filtered = activeFilter === 'All'
+                    ? [...PORTFOLIO_ITEMS]
+                    : PORTFOLIO_ITEMS.filter(i => i.category === activeFilter);
+                renderGrid();
             });
+        });
+    }
+
+    /* ── RENDER GRID ── */
+    function renderGrid() {
+        countEl.textContent = filtered.length === 0 ? '' :
+            `${filtered.length} item${filtered.length === 1 ? '' : 's'}`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="portfolio-empty">
+                <span class="portfolio-empty__icon">&#9670;</span>
+                <p class="portfolio-empty__text">No items in this category yet.</p>
+            </div>`;
+            return;
         }
 
-        /* ════════════
-           RENDER GRID
-        ════════════ */
-        function renderGrid() {
-            countEl.textContent = filtered.length === 0
-                ? ''
-                : `${filtered.length} item${filtered.length === 1 ? '' : 's'}`;
+        grid.innerHTML = filtered.map((item, i) => {
+            const isProfile = item.type === 'profile';
+            const title     = isProfile ? item.name : item.title;
+            const subtitle  = isProfile ? item.jobTitle : null;
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="portfolio-empty">
-                        <span class="portfolio-empty__icon">&#9670;</span>
-                        <p class="portfolio-empty__text">
-                            No items in this category yet.
-                        </p>
-                    </div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map((item, i) => `
-                <article class="portfolio-item reveal"
-                         data-index="${i}"
-                         role="button"
-                         tabindex="0"
-                         aria-label="View ${item.title}">
-                    <div class="portfolio-item__img">
-                        <img src="${item.image}"
-                             alt="${item.alt || item.title}"
-                             loading="lazy">
-                        <div class="portfolio-item__overlay" aria-hidden="true">
-                            <div class="overlay-icon">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                     stroke="currentColor" stroke-width="1.5">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                    <line x1="11" y1="8" x2="11" y2="14"/>
-                                    <line x1="8" y1="11" x2="14" y2="11"/>
-                                </svg>
-                            </div>
+            return `
+            <article class="portfolio-item reveal"
+                     data-index="${i}"
+                     role="button" tabindex="0"
+                     aria-label="${isProfile ? 'View profile: ' + title : 'View: ' + title}">
+                <div class="portfolio-item__img">
+                    <img src="${item.image}" alt="${item.alt || title}" loading="lazy">
+                    <div class="portfolio-item__overlay" aria-hidden="true">
+                        <span class="overlay-label">${title}</span>
+                        ${subtitle ? `<span class="overlay-sublabel">${subtitle}</span>` : ''}
+                        <div class="overlay-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.5">
+                                ${isProfile
+                                    ? '<rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/>'
+                                    : '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>'}
+                            </svg>
                         </div>
                     </div>
-                    <div class="portfolio-item__body">
-                        ${item.category
-                            ? `<span class="portfolio-item__cat">${item.category}</span>`
-                            : ''}
-                        ${item.title
-                            ? `<p class="portfolio-item__title">${item.title}</p>`
-                            : ''}
-                        ${item.description
-                            ? `<p class="portfolio-item__desc">${item.description}</p>`
-                            : ''}
+                </div>
+                <div class="portfolio-item__body">
+                    <span class="portfolio-item__cat">${item.category}</span>
+                    <p class="portfolio-item__title">${title}</p>
+                    ${subtitle ? `<p class="portfolio-item__subtitle">${subtitle}</p>` : ''}
+                </div>
+            </article>`;
+        }).join('');
+
+        grid.querySelectorAll('.portfolio-item__img img').forEach(img => {
+            img.addEventListener('error', function () { this.classList.add('broken'); });
+        });
+
+        grid.querySelectorAll('.portfolio-item').forEach(el => {
+            const open = () => {
+                const item = filtered[parseInt(el.dataset.index)];
+                if (!item) return;
+                item.type === 'profile' ? openProfile(item) : openArtLightbox(item);
+            };
+            el.addEventListener('click', open);
+            el.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+            });
+        });
+
+        // Scroll reveals
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+            });
+        }, { threshold: 0.08 });
+        grid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }
+
+    /* ══════════════════════════
+       PROFILE MODAL
+    ══════════════════════════ */
+    function openProfile(p) {
+        const content = document.getElementById('profileContent');
+        const stampClass = p.stamp === 'CLASSIFIED' ? 'profile-file-header__stamp--classified' : '';
+
+        content.innerHTML = `
+            <div class="profile-file-header">
+                <div>
+                    <div class="file-header__org">XERXES LLC // EMPLOYEE PROFILES</div>
+                    <div class="file-header__title">PERSONNEL FILE — ${p.fileId}</div>
+                </div>
+                <div class="file-header__stamp ${stampClass}">${p.stamp}</div>
+            </div>
+
+            <div class="profile-body">
+
+                <!-- Portrait col -->
+                <div class="profile-portrait-col">
+                    ${p.image
+                        ? `<img class="profile-portrait" src="${p.image}" alt="${p.alt}"
+                               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                        : ''}
+                    <div class="profile-portrait-placeholder" ${p.image ? 'style="display:none"' : ''}>
+                        <svg width="48" height="48" viewBox="0 0 100 110" fill="none"
+                             stroke="currentColor" stroke-width="1.5">
+                            <circle cx="50" cy="36" r="22" stroke-dasharray="4 3"/>
+                            <path d="M8 100 Q8 68 50 68 Q92 68 92 100"/>
+                        </svg>
+                        <span>No Image</span>
                     </div>
-                </article>`
-            ).join('');
 
-            // Hide broken images gracefully
-            grid.querySelectorAll('.portfolio-item__img img').forEach(img => {
-                img.addEventListener('error', function () {
-                    this.classList.add('broken');
-                });
-            });
+                    <div class="profile-file-id">
+                        <span class="file-id__label">File ID</span>
+                        <span class="file-id__value">${p.fileId}</span>
+                        <div class="file-barcode" aria-hidden="true">
+                            ${generateBarcode()}
+                        </div>
+                    </div>
+                </div>
 
-            // Click + keyboard handlers
-            grid.querySelectorAll('.portfolio-item').forEach(el => {
-                const open = () => openLightbox(parseInt(el.dataset.index));
-                el.addEventListener('click', open);
-                el.addEventListener('keydown', e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        open();
-                    }
-                });
-            });
+                <!-- Data col -->
+                <div class="profile-data-col">
 
-            // Trigger scroll reveals on newly rendered cards
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.08 });
+                    <div class="profile-name-block">
+                        <h2 class="profile-name">${p.name}</h2>
+                        ${p.nickname ? `<div class="profile-nickname">${p.nickname}</div>` : ''}
+                        <div class="profile-jobtitle">${p.jobTitle}</div>
+                    </div>
 
-            grid.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                    <div class="profile-fields">
+                        <div class="profile-field">
+                            <span class="profile-field__label">D.O.B.</span>
+                            <span class="profile-field__value">${renderFieldValue(p.dob)}</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="profile-field__label">Age</span>
+                            <span class="profile-field__value">${p.age}</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="profile-field__label">Blood Type</span>
+                            <span class="profile-field__value">${renderFieldValue(p.bloodType)}</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="profile-field__label">Homeworld</span>
+                            <span class="profile-field__value">${p.homeworld}</span>
+                        </div>
+                    </div>
+
+                    ${renderSection('Education', p.education)}
+                    ${renderSection('Work History', p.workHistory)}
+                    ${renderSection('Qualifications', p.qualifications)}
+                    ${p.espAbilities ? renderEspSection(p.espAbilities) : ''}
+
+                </div>
+            </div>
+
+            ${p.fileNotes ? `
+            <div class="profile-notes">
+                <div class="profile-notes__header">File Notes (${p.fileNotesFrom})</div>
+                <p class="profile-notes__text">${p.fileNotes.replace(/\n/g, '<br>')}</p>
+            </div>` : ''}
+        `;
+
+        document.getElementById('profileModal').hidden = false;
+        document.body.style.overflow = 'hidden';
+        document.getElementById('profileClose').focus();
+    }
+
+    function closeProfile() {
+        document.getElementById('profileModal').hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    /* ── RENDER HELPERS ── */
+    function renderFieldValue(val) {
+        if (!val || typeof val === 'string') return val || '—';
+        if (val.redacted) return `<span class="redacted-text">${val.text}</span>`;
+        if (val.unknown)  return `<span class="unknown-text">[${val.text}]</span>`;
+        return val;
+    }
+
+    function renderSection(title, items) {
+        if (!items || items.length === 0) return '';
+        return `
+            <div class="profile-section">
+                <div class="profile-section__title">${title}</div>
+                <ul class="profile-section__list">
+                    ${items.map(item => {
+                        if (typeof item === 'string') return `<li>${item}</li>`;
+                        if (item.redacted) return `<li><span class="redacted-text">${item.text}</span></li>`;
+                        if (item.unknown)  return `<li><span class="unknown-text">[${item.text}]</span></li>`;
+                        return `<li>${item}</li>`;
+                    }).join('')}
+                </ul>
+            </div>`;
+    }
+
+    function renderEspSection(abilities) {
+        return `
+            <div class="profile-section">
+                <div class="profile-section__title">ESP Abilities</div>
+                <div class="esp-abilities">
+                    ${abilities.map(a => {
+                        if (typeof a === 'string') return `<span class="esp-pill">${a}</span>`;
+                        if (a.redacted) return `<span class="esp-pill redacted">${a.text}</span>`;
+                        return `<span class="esp-pill">${a}</span>`;
+                    }).join('')}
+                </div>
+            </div>`;
+    }
+
+    function generateBarcode() {
+        // Decorative CSS barcode using random widths
+        const bars = [];
+        for (let i = 0; i < 28; i++) {
+            const w = Math.random() > 0.5 ? 2 : 1;
+            const isSpace = Math.random() > 0.65;
+            if (!isSpace) bars.push(`<div class="barcode-bar" style="width:${w}px"></div>`);
+            else          bars.push(`<div style="width:${w + 1}px; flex-shrink:0"></div>`);
         }
+        return bars.join('');
+    }
 
-        /* ════════════
-           LIGHTBOX
-        ════════════ */
-        function openLightbox(index) {
-            lightboxIndex = index;
-            populateLightbox();
-            lightbox.hidden = false;
-            document.body.style.overflow = 'hidden';
-            document.getElementById('lightboxClose').focus();
-        }
+    /* Profile close events */
+    document.getElementById('profileClose').addEventListener('click', closeProfile);
+    document.getElementById('profileBackdrop').addEventListener('click', closeProfile);
 
-        function populateLightbox() {
-            const item = filtered[lightboxIndex];
-            if (!item) return;
+    /* ══════════════════════════
+       ART LIGHTBOX
+    ══════════════════════════ */
+    function openArtLightbox(item) {
+        document.getElementById('artLbImg').src          = item.image;
+        document.getElementById('artLbImg').alt          = item.alt || item.title;
+        document.getElementById('artLbCat').textContent  = item.category || '';
+        document.getElementById('artLbTitle').textContent = item.title   || '';
+        document.getElementById('artLbDesc').textContent  = item.description || '';
+        document.getElementById('artLightbox').hidden    = false;
+        document.body.style.overflow = 'hidden';
+        document.getElementById('artClose').focus();
+    }
 
-            document.getElementById('lbImg').src        = item.image;
-            document.getElementById('lbImg').alt        = item.alt || item.title;
-            document.getElementById('lbCat').textContent   = item.category || '';
-            document.getElementById('lbTitle').textContent = item.title    || '';
-            document.getElementById('lbDesc').textContent  = item.description || '';
-            document.getElementById('lbCounter').textContent =
-                `${lightboxIndex + 1} / ${filtered.length}`;
+    function closeArtLightbox() {
+        document.getElementById('artLightbox').hidden = true;
+        document.body.style.overflow = '';
+    }
 
-            document.getElementById('lbPrev').disabled = lightboxIndex === 0;
-            document.getElementById('lbNext').disabled = lightboxIndex === filtered.length - 1;
-        }
+    document.getElementById('artClose').addEventListener('click', closeArtLightbox);
+    document.getElementById('artBackdrop').addEventListener('click', closeArtLightbox);
 
-        function closeLightbox() {
-            lightbox.hidden = true;
-            document.body.style.overflow = '';
-        }
+    /* ── KEYBOARD: ESC closes whatever is open ── */
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        if (!document.getElementById('profileModal').hidden) closeProfile();
+        if (!document.getElementById('artLightbox').hidden)  closeArtLightbox();
+    });
 
-        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-        document.getElementById('lightboxBackdrop').addEventListener('click', closeLightbox);
-
-        document.getElementById('lbPrev').addEventListener('click', () => {
-            if (lightboxIndex > 0) { lightboxIndex--; populateLightbox(); }
-        });
-
-        document.getElementById('lbNext').addEventListener('click', () => {
-            if (lightboxIndex < filtered.length - 1) { lightboxIndex++; populateLightbox(); }
-        });
-
-        // Keyboard: ESC to close, arrows to navigate
-        document.addEventListener('keydown', e => {
-            if (lightbox.hidden) return;
-            if (e.key === 'Escape')     closeLightbox();
-            if (e.key === 'ArrowLeft')  { if (lightboxIndex > 0) { lightboxIndex--; populateLightbox(); } }
-            if (e.key === 'ArrowRight') { if (lightboxIndex < filtered.length - 1) { lightboxIndex++; populateLightbox(); } }
-        });
-
-        /* ── INIT ── */
-        document.getElementById('year').textContent = new Date().getFullYear();
-        buildFilters();
-        renderGrid();
-    </script>
-
+    /* ── INIT ── */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    buildFilters();
+    renderGrid();</script>
 </body>
 </html>
