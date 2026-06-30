@@ -877,7 +877,7 @@
         {
             type:     'profile',
             category: 'Command',
-            image:    '../images/mayakannan_profile.jpg',
+            images:  ['../images/mayakannan_profile.jpg', '../images/sunny2.jpg'],  // add more: ['img1.jpg', 'img2.jpg']
             alt:      'Dr. Sundaravalli Mayakannan',
 
             // ── Profile data ──
@@ -911,7 +911,7 @@
         {
             type:     'profile',
             category: 'Operations',
-            image:    '../images/Quiz_profile.jpg',
+            images:  ['../images/Quiz_profile.jpg', '../images/Quiz2.jpg'],  // add more: ['img1.jpg', 'img2.jpg']
             alt:      'Faustus J. Basra — Quiz',
 
             name:      'Faustus J. Basra - "Quiz"',
@@ -952,7 +952,7 @@
         {
             type:     'profile',
             category: 'Crew',
-            image:    '../images/Ves_profile.jpg',
+            images:  ['../images/Ves_profile.jpg', '../images/Ves-Finished_2.jpg'],  // add more: ['img1.jpg', 'img2.jpg']
             alt:      'Silvestre Santos — Ves',
 
             name:      'Silvestre Santos',
@@ -986,7 +986,7 @@
         {
             type:     'profile',
             category: 'Classified',
-            image:    '../images/rj_profile.jpg',
+            images:  ['../images/rj_profile.jpg', '../images/robbiejack2.jpg'],  // add more: ['img1.jpg', 'img2.jpg']
             alt:      'Roberta-Jacqueline Marsh — Robbie-Jack',
 
             name:      'Roberta-Jacqueline Marsh',
@@ -1024,7 +1024,7 @@
             category:    'Cover Art',
             title:       'The Azar Project — Cover WIP',
             description: 'Work in progress cover art for Book One of the Xerxes Trilogy.',
-            image:       '../images/AzarCover.jpg',
+            images:  ['../images/AzarCover.jpg'],  // add more: ['img1.jpg', 'img2.jpg']
             alt:         'The Azar Project cover art work in progress',
         }
 
@@ -1054,6 +1054,10 @@
     const grid      = document.getElementById('portfolioGrid');
     const filterBar = document.getElementById('filterBar');
     const countEl   = document.getElementById('portfolioCount');
+
+    /* ── CAROUSEL STATE ── */
+    let carouselImages = [];   // images array for the currently open profile
+    let carouselIndex  = 0;    // which image is showing
 
     /* ── FILTERS ── */
     function buildFilters() {
@@ -1107,7 +1111,7 @@
                      role="button" tabindex="0"
                      aria-label="${isProfile ? 'View profile: ' + title : 'View: ' + title}">
                 <div class="portfolio-item__img">
-                    <img src="${item.image}" alt="${item.alt || title}" loading="lazy">
+                    <img src="${item.images ? item.images[0] : item.image}" alt="${item.alt || title}" loading="lazy">
                     <div class="portfolio-item__overlay" aria-hidden="true">
                         <span class="overlay-label">${title}</span>
                         ${subtitle ? `<span class="overlay-sublabel">${subtitle}</span>` : ''}
@@ -1158,6 +1162,10 @@
        PROFILE MODAL
     ══════════════════════════ */
     function openProfile(p) {
+        // Set up carousel — support both 'images: []' and legacy 'image: ''
+        carouselImages = p.images && p.images.length ? p.images : (p.image ? [p.image] : []);
+        carouselIndex  = 0;
+
         const content = document.getElementById('profileContent');
         const stampClass = p.stamp === 'CLASSIFIED' ? 'profile-file-header__stamp--classified' : '';
 
@@ -1174,11 +1182,37 @@
 
                 <!-- Portrait col -->
                 <div class="profile-portrait-col">
-                    ${p.image
-                        ? `<img class="profile-portrait" src="${p.image}" alt="${p.alt}"
-                               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-                        : ''}
-                    <div class="profile-portrait-placeholder" ${p.image ? 'style="display:none"' : ''}>
+                    <div class="portrait-carousel-wrap">
+                        <img class="profile-portrait" id="carouselImg"
+                             src="${carouselImages[0] || ''}"
+                             alt="${p.alt}"
+                             onerror="this.style.opacity='0'">
+                        <button class="carousel-nav carousel-nav--prev" id="carouselPrev"
+                                aria-label="Previous image"
+                                ${carouselImages.length <= 1 ? 'style="display:none"' : ''}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <polyline points="15 18 9 12 15 6"/>
+                            </svg>
+                        </button>
+                        <button class="carousel-nav carousel-nav--next" id="carouselNext"
+                                aria-label="Next image"
+                                ${carouselImages.length <= 1 ? 'style="display:none"' : ''}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    ${carouselImages.length > 1 ? `
+                    <div class="carousel-dots" id="carouselDots">
+                        ${carouselImages.map((_, i) =>
+                            `<div class="carousel-dot${i === 0 ? ' active' : ''}"></div>`
+                        ).join('')}
+                    </div>` : ''}
+
+                    <div class="profile-portrait-placeholder" style="display:none" id="carouselPlaceholder">
                         <svg width="48" height="48" viewBox="0 0 100 110" fill="none"
                              stroke="currentColor" stroke-width="1.5">
                             <circle cx="50" cy="36" r="22" stroke-dasharray="4 3"/>
@@ -1302,6 +1336,43 @@
     /* Profile close events */
     document.getElementById('profileClose').addEventListener('click', closeProfile);
     document.getElementById('profileBackdrop').addEventListener('click', closeProfile);
+
+    /* ── CAROUSEL NAVIGATION ── */
+    // Using event delegation on the modal since prev/next are re-rendered each open
+    document.getElementById('profileCard').addEventListener('click', e => {
+        const prev = e.target.closest('#carouselPrev');
+        const next = e.target.closest('#carouselNext');
+        if (!prev && !next) return;
+        if (prev) carouselIndex = Math.max(0, carouselIndex - 1);
+        if (next) carouselIndex = Math.min(carouselImages.length - 1, carouselIndex + 1);
+        updateCarousel();
+    });
+
+    function updateCarousel() {
+        const img   = document.getElementById('carouselImg');
+        const prev  = document.getElementById('carouselPrev');
+        const next  = document.getElementById('carouselNext');
+        const dots  = document.getElementById('carouselDots');
+
+        if (!img) return;
+
+        // Fade out → swap src → fade in
+        img.style.opacity = '0';
+        setTimeout(() => {
+            img.src           = carouselImages[carouselIndex] || '';
+            img.style.opacity = '1';
+        }, 160);
+
+        if (prev) prev.disabled = (carouselIndex === 0);
+        if (next) next.disabled = (carouselIndex === carouselImages.length - 1);
+
+        // Update dots
+        if (dots) {
+            dots.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === carouselIndex);
+            });
+        }
+    }
 
     /* ══════════════════════════
        ART LIGHTBOX
