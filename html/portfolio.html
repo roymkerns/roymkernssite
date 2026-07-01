@@ -342,7 +342,73 @@
             object-fit: cover;
             display: block;
             border: 1px solid var(--border-sub);
+            transition: opacity 0.18s ease;
         }
+
+        /* ── PORTRAIT CAROUSEL ── */
+        .portrait-carousel-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 32px;
+            height: 32px;
+            background: rgba(5, 5, 10, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+            .carousel-nav:hover {
+                border-color: var(--purple);
+                color: var(--text);
+                background: rgba(138, 53, 232, 0.25);
+            }
+
+            .carousel-nav:disabled {
+                opacity: 0.15;
+                cursor: default;
+                pointer-events: none;
+            }
+
+        .carousel-nav--prev {
+            left: 0;
+        }
+
+        .carousel-nav--next {
+            right: 0;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding-top: 0.45rem;
+        }
+
+        .carousel-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: background 0.2s ease;
+            flex-shrink: 0;
+        }
+
+            .carousel-dot.active {
+                background: var(--purple-light);
+            }
 
         .profile-portrait-placeholder {
             width: 100%;
