@@ -748,6 +748,106 @@
             color: var(--text-muted);
         }
 
+        /* ── FULLSCREEN IMAGE VIEWER ── */
+        .img-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 1000; /* above profile modal (800) */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: rgba(3, 3, 8, 0.98);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            cursor: zoom-out;
+        }
+
+            .img-viewer[hidden] {
+                display: none;
+            }
+
+        .img-viewer__img {
+            max-width: 100%;
+            max-height: 92vh;
+            object-fit: contain;
+            display: block;
+            /* Subtle entrance scale */
+            animation: viewerPop 0.2s ease;
+            cursor: default;
+        }
+
+        @keyframes viewerPop {
+            from {
+                transform: scale(0.94);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .img-viewer__close {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 2;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-sub);
+            background: rgba(5, 5, 10, 0.85);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .img-viewer__close:hover {
+                border-color: var(--orange);
+                color: var(--text);
+            }
+
+        .img-viewer__hint {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            pointer-events: none;
+            animation: hintFade 3s ease forwards;
+        }
+
+        @keyframes hintFade {
+            0% {
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Make carousel portrait show click cursor */
+        #carouselImg {
+            cursor: zoom-in;
+        }
+
         /* ── RESPONSIVE PROFILE CARD ── */
         @media (max-width: 700px) {
             .profile-body {
@@ -884,6 +984,24 @@
                 <p class="art-lightbox__desc" id="artLbDesc"></p>
             </div>
         </div>
+    </div>
+
+    <!-- FULLSCREEN IMAGE VIEWER -->
+    <div class="img-viewer" id="imgViewer" hidden
+         role="dialog" aria-modal="true" aria-label="Full size image">
+
+        <button class="img-viewer__close" id="imgViewerClose" aria-label="Close full size view">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </button>
+
+        <img class="img-viewer__img" id="imgViewerImg" src="" alt="">
+
+        <span class="img-viewer__hint" id="imgViewerHint">Click anywhere to close</span>
+
     </div>
 
     <!-- FOOTER -->
@@ -1403,6 +1521,44 @@
     document.getElementById('profileClose').addEventListener('click', closeProfile);
     document.getElementById('profileBackdrop').addEventListener('click', closeProfile);
 
+    /* ══════════════════════════
+       FULLSCREEN IMAGE VIEWER
+       Opens when portrait is clicked
+    ══════════════════════════ */
+    const imgViewer      = document.getElementById('imgViewer');
+    const imgViewerImg   = document.getElementById('imgViewerImg');
+    const imgViewerClose = document.getElementById('imgViewerClose');
+
+    function openImgViewer(src, alt) {
+        imgViewerImg.src = src;
+        imgViewerImg.alt = alt || '';
+        imgViewer.hidden = false;
+        // Don't lock body scroll — profile modal already has it locked
+        imgViewerClose.focus();
+    }
+
+    function closeImgViewer() {
+        imgViewer.hidden = true;
+        imgViewerImg.src = '';
+    }
+
+    // Close on backdrop click (the viewer itself, not the img)
+    imgViewer.addEventListener('click', e => {
+        if (e.target !== imgViewerImg && e.target !== imgViewerClose) {
+            closeImgViewer();
+        }
+    });
+
+    imgViewerClose.addEventListener('click', closeImgViewer);
+
+    // Click on the carousel portrait image → open viewer
+    // Using event delegation on profileCard since #carouselImg is re-rendered each open
+    document.getElementById('profileCard').addEventListener('click', e => {
+        const portrait = e.target.closest('#carouselImg');
+        if (!portrait || !portrait.src) return;
+        openImgViewer(portrait.src, portrait.alt);
+    });
+
     /* ── CAROUSEL NAVIGATION ── */
     // Using event delegation on the modal since prev/next are re-rendered each open
     document.getElementById('profileCard').addEventListener('click', e => {
@@ -1465,8 +1621,10 @@
     /* ── KEYBOARD: ESC closes whatever is open ── */
     document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
-        if (!document.getElementById('profileModal').hidden) closeProfile();
-        if (!document.getElementById('artLightbox').hidden)  closeArtLightbox();
+        // Close in reverse z-order: viewer first, then modals
+        if (!imgViewer.hidden)                                     { closeImgViewer(); return; }
+        if (!document.getElementById('profileModal').hidden)        closeProfile();
+        if (!document.getElementById('artLightbox').hidden)         closeArtLightbox();
     });
 
     /* ── INIT ── */

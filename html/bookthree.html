@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Karava Initiative — Roy M. Kerns</title>
-    <meta name="description" content="The Karava Initiative — Book Two of the Xerxes Trilogy by Roy M. Kerns.">
+    <title>Xerxes Trilogy Book Three — Roy M. Kerns</title>
+    <meta name="description" content="Book Three of the Xerxes Trilogy by Roy M. Kerns — coming soon.">
     <meta name="theme-color" content="#05050A">
     <link rel="icon" type="../images/x-icon" href="../images/favicon.ico" />
     <link rel="icon" type="../images/png" sizes="32x32" href="../images/favicon-32x32.png" />
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../css/styles.css">
 
     <style>
-        /* ── BOOK HERO ── */
+        /* ── HERO ── */
         .book-hero {
             position: relative;
             overflow: hidden;
@@ -26,7 +26,7 @@
                 content: '';
                 position: absolute;
                 inset: 0;
-                background: linear-gradient( to top, var(--bg) 0%, rgba(5,5,10,0.65) 55%, rgba(5,5,10,0.3) 100% );
+                background: linear-gradient( to top, var(--bg) 0%, rgba(5,5,10,0.7) 55%, rgba(5,5,10,0.35) 100% );
                 z-index: 0;
                 pointer-events: none;
             }
@@ -43,26 +43,42 @@
             font-family: var(--font-display);
             font-size: 0.6rem;
             letter-spacing: 0.42em;
-            color: var(--orange);
+            color: var(--text-dim); /* dimmer than other books — not announced */
             text-transform: uppercase;
         }
 
         .book-main-title {
             font-family: var(--font-display);
-            font-size: clamp(3rem, 9vw, 7rem);
+            font-size: clamp(2.2rem, 7vw, 5.5rem);
             letter-spacing: 0.04em;
-            line-height: 0.95;
-            color: var(--text);
+            line-height: 1.05;
+            /* Desaturated — unknown title, so no gradient */
+            color: var(--text-muted);
         }
 
-            /* Book two gets a cooler blue-violet gradient vs Azar's warm orange */
             .book-main-title span {
                 display: block;
-                background: linear-gradient(120deg, #4A90D9 0%, var(--purple-light) 50%, var(--pink) 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
+                color: var(--text-dim);
+                font-size: 0.55em;
+                letter-spacing: 0.22em;
+                margin-bottom: 0.4rem;
             }
+
+        /* Lock badge */
+        .locked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            border: 1px solid var(--text-dim);
+            padding: 0.4rem 1rem;
+            margin-top: 0.75rem;
+            width: fit-content;
+            clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+        }
 
         .book-hero-cta {
             display: flex;
@@ -70,52 +86,6 @@
             flex-wrap: wrap;
             margin-top: 1.5rem;
         }
-
-        /* ── COMING SOON BANNER ── */
-        .coming-soon-banner {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--purple);
-            padding: 1.25rem 1.75rem;
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            flex-wrap: wrap;
-        }
-
-        .coming-soon-banner__dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--purple-light);
-            box-shadow: var(--glow-purple);
-            flex-shrink: 0;
-            animation: pulseDot 2.5s ease-in-out infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.45);
-            }
-        }
-
-        .coming-soon-banner__text {
-            font-family: var(--font-display);
-            font-size: 0.72rem;
-            letter-spacing: 0.12em;
-            color: var(--text-muted);
-        }
-
-            .coming-soon-banner__text span {
-                color: var(--text);
-            }
 
         /* ── BREADCRUMB ── */
         .book-breadcrumb {
@@ -150,10 +120,6 @@
             border-top: 1px solid var(--border-sub);
         }
 
-            .book-section:first-of-type {
-                border-top: none;
-            }
-
         .book-section-label {
             font-family: var(--font-display);
             font-size: 0.6rem;
@@ -180,19 +146,15 @@
 
         .cover-placeholder {
             background: var(--bg-surface);
-            border: 1px solid var(--border);
-            transition: border-color 0.3s ease;
+            border: 1px solid var(--border-sub);
         }
 
-            .cover-placeholder:hover {
-                border-color: rgba(138,53,232,0.4);
-            }
-
+            /* Dimmer than book 1+2 — locked feel */
             .cover-placeholder::before {
                 content: '';
                 position: absolute;
                 inset: 0;
-                background: linear-gradient(135deg, rgba(74,144,217,0.06) 0%, rgba(138,53,232,0.04) 100%);
+                background: rgba(5,5,10,0.35);
                 pointer-events: none;
             }
 
@@ -201,16 +163,17 @@
         }
 
         .cover-placeholder__icon {
-            font-size: 2.5rem;
-            color: var(--purple-dim);
+            font-size: 2rem;
+            color: var(--text-dim);
             display: block;
+            opacity: 0.3;
         }
 
         .cover-placeholder__label {
             font-family: var(--font-display);
             font-size: 0.6rem;
             letter-spacing: 0.35em;
-            color: var(--text-muted);
+            color: var(--text-dim);
         }
 
         .cover-placeholder__sub {
@@ -218,11 +181,10 @@
             font-size: 0.72rem;
             font-style: italic;
             color: var(--text-dim);
-            text-align: center;
-            padding-inline: 1rem;
+            opacity: 0.6;
         }
 
-        /* ── PLACEHOLDER BLURB BLOCK ── */
+        /* ── PLACEHOLDER BLOCKS ── */
         .placeholder-block {
             background: var(--bg-surface);
             border: 1px dashed var(--border-sub);
@@ -249,17 +211,13 @@
             line-height: 1.75;
         }
 
-        /* ── CAST CARDS ── */
+        /* ── CAST GRID ── */
         .cast-card {
             background: var(--bg-card);
             border: 1px solid var(--border-sub);
             padding: 1.25rem;
-            transition: border-color 0.3s ease;
+            opacity: 0.55; /* extra dim — truly unknown */
         }
-
-            .cast-card:hover {
-                border-color: var(--border);
-            }
 
         .cast-card__art {
             aspect-ratio: 3 / 4;
@@ -270,7 +228,6 @@
             border: 1px solid var(--border-sub);
         }
 
-        /* Art placeholder */
         .cast-art-placeholder {
             position: absolute;
             inset: 0;
@@ -279,12 +236,12 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+            background: var(--bg-elevated);
         }
 
         .cast-art-placeholder__icon {
-            font-size: 1.5rem;
-            opacity: 0.15;
+            font-size: 1.25rem;
+            opacity: 0.1;
         }
 
         .cast-art-placeholder__label {
@@ -299,68 +256,27 @@
 
         .cast-card__name {
             font-family: var(--font-display);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 0.06em;
-            color: var(--text);
-            margin-bottom: 0.25rem;
-            line-height: 1.2;
-        }
-
-        .cast-card__nickname {
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            color: var(--orange-light);
+            color: var(--text-dim);
             margin-bottom: 0.35rem;
-            font-style: italic;
         }
 
         .cast-card__role {
             font-family: var(--font-display);
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             letter-spacing: 0.18em;
-            color: var(--purple-light);
+            color: var(--text-dim);
             text-transform: uppercase;
             margin-bottom: 0.65rem;
         }
 
         .cast-card__desc {
             font-family: var(--font-body);
-            font-size: 0.82rem;
-            line-height: 1.7;
-            color: var(--text-muted);
-        }
-
-        .cast-card--placeholder .cast-card__desc {
+            font-size: 0.8rem;
+            line-height: 1.65;
             color: var(--text-dim);
             font-style: italic;
-        }
-
-        /* ── IMAGE PLACEHOLDERS ── */
-        .img-placeholder {
-            aspect-ratio: 4/3;
-            background: var(--bg-surface);
-            border: 1px dashed var(--border-sub);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem;
-        }
-
-        .img-placeholder__icon {
-            font-size: 1.5rem;
-            opacity: 0.12;
-        }
-
-        .img-placeholder__label {
-            font-family: var(--font-display);
-            font-size: 0.58rem;
-            letter-spacing: 0.3em;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            text-align: center;
         }
 
         /* ── RESPONSIVE ── */
@@ -415,14 +331,24 @@
             <div class="book-hero__inner container">
 
                 <span class="book-series-badge">
-                    Book Two &mdash; The Xerxes Trilogy
+                    Book Three &mdash; The Xerxes Trilogy
                 </span>
 
                 <h1 class="book-main-title">
-                    The<br>
-                    <span>Karava</span>
-                    Initiative
+                    <span>The Xerxes Trilogy</span>
+                    Book Three
                 </h1>
+
+                <div class="locked-badge" aria-label="Title not yet announced">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Title Not Yet Announced
+                </div>
 
                 <div class="book-hero-cta">
                     <a href="trilogy.html" class="btn-ghost">← Back to Trilogy</a>
@@ -432,7 +358,7 @@
         </section>
 
         <!-- ═══════════════════════
-             BOOK BODY
+             BODY
              ═══════════════════════ -->
         <div class="book-body container">
 
@@ -446,15 +372,6 @@
                 The Xerxes Trilogy
             </a>
 
-            <!-- Coming soon banner -->
-            <div class="coming-soon-banner reveal">
-                <div class="coming-soon-banner__dot" aria-hidden="true"></div>
-                <p class="coming-soon-banner__text">
-                    <span>The Karava Initiative</span> is currently in progress.
-                    Details, cover art, and the full blurb will be added here when ready.
-                </p>
-            </div>
-
             <!-- ── OVERVIEW + COVER ── -->
             <div class="book-main-layout">
 
@@ -463,30 +380,33 @@
 
                     <!--
                         COVER IMAGE PLACEHOLDER
-                        When cover art is ready, replace this entire .cover-placeholder
-                        block with:
+                        Replace when cover art is ready:
 
-                        <img class="book-cover-img"
-                             src="../assets/covers/karava-initiative.jpg"
-                             alt="The Karava Initiative book cover"
-                             style="width:100%; aspect-ratio:2/3; object-fit:cover;
-                                    display:block; border:1px solid var(--border-sub);">
+                        <img style="width:100%; aspect-ratio:2/3; object-fit:cover;
+                                    display:block; border:1px solid var(--border-sub);"
+                             src="../assets/covers/book-three.jpg"
+                             alt="[ Title ] book cover">
                     -->
                     <div class="cover-placeholder">
                         <div class="cover-placeholder__inner">
-                            <span class="cover-placeholder__icon">&#9670;</span>
-                            <span class="cover-placeholder__label">Cover Art</span>
-                            <span class="cover-placeholder__sub">
-                                Coming Soon
+                            <span class="cover-placeholder__icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="1.2"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
                             </span>
+                            <span class="cover-placeholder__label">Cover Art</span>
+                            <span class="cover-placeholder__sub">Not Yet Available</span>
                         </div>
                     </div>
 
-                    <!-- Book metadata — fill in when known -->
-                    <div class="book-meta" style="margin-top: 1.75rem;">
+                    <!-- Metadata -->
+                    <div class="book-meta" style="margin-top:1.75rem;">
                         <div class="meta-row">
                             <span class="meta-label">Series</span>
-                            <span class="meta-value">The Xerxes Trilogy &mdash; Book Two</span>
+                            <span class="meta-value">The Xerxes Trilogy &mdash; Book Three</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-label">Universe</span>
@@ -497,47 +417,56 @@
                             <span class="meta-value">Roy M. Kerns</span>
                         </div>
                         <div class="meta-row">
+                            <span class="meta-label">Title</span>
+                            <span class="meta-value" style="color:var(--text-dim); font-style:italic;">
+                                TBA
+                            </span>
+                        </div>
+                        <div class="meta-row">
                             <span class="meta-label">In-Universe Date</span>
-                            <span class="meta-value">
-                                <!-- Add when known -->
-                                <span style="color:var(--text-dim); font-style:italic;">TBA</span>
+                            <span class="meta-value" style="color:var(--text-dim); font-style:italic;">
+                                TBA
                             </span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-label">Status</span>
-                            <span class="meta-value" style="color:var(--purple-light);">In Progress</span>
+                            <span class="meta-value" style="color:var(--text-dim);">
+                                Not Yet Started
+                            </span>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Right: Blurb placeholder -->
+                <!-- Right: Everything placeholder -->
                 <div class="reveal">
 
                     <span class="book-section-label">About the Book</span>
 
                     <!--
                         BLURB PLACEHOLDER
-                        When the blurb is ready, replace this .placeholder-block
-                        with a .blurb div using the same structure as azar.html:
-
-                        <div class="blurb" style="margin-bottom: 2.5rem;">
-                            <p>First paragraph...</p>
-                            <p>Second paragraph...</p>
-                            <p class="blurb-hook">Hook line here.</p>
-                        </div>
+                        Replace with .blurb div when ready — same structure as azar.html.
                     -->
                     <div class="placeholder-block" style="margin-bottom:2.5rem;">
-                        <span class="placeholder-block__label">Blurb — Pending</span>
+                        <span class="placeholder-block__label">Title — Pending</span>
                         <p class="placeholder-block__text">
-                            The official blurb for The Karava Initiative will appear here.
-                            Check back once Roy has details to share.
+                            The title and details for Book Three of the Xerxes Trilogy
+                            haven't been announced yet. This page will be updated as
+                            information becomes available.
                         </p>
                     </div>
 
-                    <a href="azar.html" class="btn-ghost">
-                        ← Read Book One first
-                    </a>
+                    <div class="placeholder-block" style="margin-bottom:2.5rem;">
+                        <span class="placeholder-block__label">Blurb — Pending</span>
+                        <p class="placeholder-block__text">
+                            The official blurb will appear here when ready.
+                        </p>
+                    </div>
+
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                        <a href="azar.html" class="btn-ghost">Read Book One</a>
+                        <a href="karava.html" class="btn-ghost">Read Book Two</a>
+                    </div>
 
                 </div>
 
@@ -552,130 +481,126 @@
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
 
                     <!--
-                        INTERIOR IMAGE PLACEHOLDER 1
-                        Replace with:
-                        <img src="../assets/karava/interior-1.jpg"
-                             alt="Description"
-                             style="width:100%; display:block; border:1px solid var(--border-sub);">
+                        Replace each block with an <img> tag when art is ready.
                     -->
-                    <div class="img-placeholder">
-                        <span class="img-placeholder__icon">&#9670;</span>
-                        <span class="img-placeholder__label">Interior Image 1</span>
+                    <div style="
+                        aspect-ratio:4/3;
+                        background:var(--bg-surface);
+                        border:1px dashed var(--border-sub);
+                        display:flex; flex-direction:column;
+                        align-items:center; justify-content:center;
+                        gap:0.5rem; opacity:0.5;">
+                        <span style="font-size:1.25rem; opacity:0.15;">&#9670;</span>
+                        <span style="font-family:var(--font-display); font-size:0.55rem;
+                                     letter-spacing:0.3em; color:var(--text-dim);
+                                     text-transform:uppercase;">Interior Image 1</span>
                     </div>
 
-                    <!--
-                        INTERIOR IMAGE PLACEHOLDER 2
-                        Replace with:
-                        <img src="../assets/karava/interior-2.jpg"
-                             alt="Description"
-                             style="width:100%; display:block; border:1px solid var(--border-sub);">
-                    -->
-                    <div class="img-placeholder">
-                        <span class="img-placeholder__icon">&#9670;</span>
-                        <span class="img-placeholder__label">Interior Image 2</span>
+                    <div style="
+                        aspect-ratio:4/3;
+                        background:var(--bg-surface);
+                        border:1px dashed var(--border-sub);
+                        display:flex; flex-direction:column;
+                        align-items:center; justify-content:center;
+                        gap:0.5rem; opacity:0.5;">
+                        <span style="font-size:1.25rem; opacity:0.15;">&#9670;</span>
+                        <span style="font-family:var(--font-display); font-size:0.55rem;
+                                     letter-spacing:0.3em; color:var(--text-dim);
+                                     text-transform:uppercase;">Interior Image 2</span>
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- ── CAST OF CHARACTERS ── -->
+            <!-- ── CAST ── -->
             <div class="book-section" id="cast">
 
                 <div class="reveal">
-                    <span class="book-section-label">Returning &amp; New</span>
+                    <span class="book-section-label">Characters</span>
                     <h2 class="book-section-title">Cast of Characters</h2>
                     <p style="font-family:var(--font-body); font-size:0.92rem;
-                               color:var(--text-muted); font-style:italic;
+                               color:var(--text-dim); font-style:italic;
                                margin-bottom:2.5rem; max-width:520px;">
-                        Character details for Book Two will be filled in here. Returning
-                        characters from The Azar Project are listed below as placeholders.
+                        Character details for Book Three are not yet available.
+                        Placeholder cards are shown below.
                     </p>
                 </div>
 
                 <div class="cast-grid">
 
-                    <!-- MAYAKANNAN — returning -->
-                    <div class="cast-card cast-card--placeholder reveal">
+                    <!--
+                        Add cast cards here when Book Three characters are known.
+                        Use the same structure as azar.html cast cards.
+                        For now showing muted placeholder cards.
+                    -->
+                    <div class="cast-card reveal">
                         <div class="cast-card__art">
-                            <!--
-                                Replace with:
-                                <img src="../images/mayakannan_profile.jpg"
-                                     alt="Dr. Sundaravalli Mayakannan">
-                                Remove .cast-art-placeholder
-                            -->
                             <div class="cast-art-placeholder">
                                 <span class="cast-art-placeholder__icon">&#9670;</span>
-                                <span class="cast-art-placeholder__label">Mayakannan</span>
+                                <span class="cast-art-placeholder__label">Character TBA</span>
                             </div>
                         </div>
-                        <p class="cast-card__name">Dr. Sundaravalli Mayakannan</p>
-                        <p class="cast-card__role">Returning — Director &amp; CEO</p>
-                        <p class="cast-card__desc">Details for Book Two TBA.</p>
+                        <p class="cast-card__name">[ Character Name ]</p>
+                        <p class="cast-card__role">TBA</p>
+                        <p class="cast-card__desc">Details pending.</p>
                     </div>
 
-                    <!-- QUIZ — returning -->
-                    <div class="cast-card cast-card--placeholder reveal reveal-delay-1">
+                    <div class="cast-card reveal reveal-delay-1">
                         <div class="cast-card__art">
                             <div class="cast-art-placeholder">
                                 <span class="cast-art-placeholder__icon">&#9670;</span>
-                                <span class="cast-art-placeholder__label">Quiz</span>
+                                <span class="cast-art-placeholder__label">Character TBA</span>
                             </div>
                         </div>
-                        <p class="cast-card__name">Faustus J. Basra</p>
-                        <p class="cast-card__nickname">"Quiz"</p>
-                        <p class="cast-card__role">Returning — ESP Coordinator</p>
-                        <p class="cast-card__desc">Details for Book Two TBA.</p>
+                        <p class="cast-card__name">[ Character Name ]</p>
+                        <p class="cast-card__role">TBA</p>
+                        <p class="cast-card__desc">Details pending.</p>
                     </div>
 
-                    <!-- SILVESTRE — returning -->
-                    <div class="cast-card cast-card--placeholder reveal reveal-delay-2">
+                    <div class="cast-card reveal reveal-delay-2">
                         <div class="cast-card__art">
                             <div class="cast-art-placeholder">
                                 <span class="cast-art-placeholder__icon">&#9670;</span>
-                                <span class="cast-art-placeholder__label">Silvestre</span>
+                                <span class="cast-art-placeholder__label">Character TBA</span>
                             </div>
                         </div>
-                        <p class="cast-card__name">Silvestre Santos</p>
-                        <p class="cast-card__nickname">"Ves"</p>
-                        <p class="cast-card__role">Returning — Head Custodian</p>
-                        <p class="cast-card__desc">Details for Book Two TBA.</p>
+                        <p class="cast-card__name">[ Character Name ]</p>
+                        <p class="cast-card__role">TBA</p>
+                        <p class="cast-card__desc">Details pending.</p>
                     </div>
 
-                    <!-- NEW CHARACTER PLACEHOLDER -->
-                    <div class="cast-card cast-card--placeholder reveal reveal-delay-3">
+                    <div class="cast-card reveal reveal-delay-3">
                         <div class="cast-card__art">
                             <div class="cast-art-placeholder">
                                 <span class="cast-art-placeholder__icon">&#9670;</span>
-                                <span class="cast-art-placeholder__label">New Character</span>
+                                <span class="cast-art-placeholder__label">Character TBA</span>
                             </div>
                         </div>
-                        <p class="cast-card__name" style="color:var(--text-dim);">
-                            [ New Character ]
-                        </p>
-                        <p class="cast-card__role" style="color:var(--text-dim);">TBA</p>
+                        <p class="cast-card__name">[ Character Name ]</p>
+                        <p class="cast-card__role">TBA</p>
                         <p class="cast-card__desc">Details pending.</p>
                     </div>
 
                 </div>
             </div>
 
-            <!-- ── WHERE TO BUY — placeholder until book releases ── -->
+            <!-- ── WHERE TO BUY ── -->
             <div class="book-section reveal">
 
-                <span class="book-section-label">Order The Karava Initiative</span>
+                <span class="book-section-label">Order Book Three</span>
                 <h2 class="book-section-title">Where to Buy</h2>
 
                 <div class="placeholder-block">
                     <span class="placeholder-block__label">Retailers — Pending</span>
                     <p class="placeholder-block__text">
-                        Purchase links will be listed here when The Karava Initiative
-                        is available. In the meantime, you can follow Roy on social
-                        media for updates, or read Book One.
+                        Purchase links will be added here when Book Three is announced
+                        and available. Follow Roy on social media to stay updated.
                     </p>
-                    <a href="azar.html" class="btn-primary" style="margin-top:0.5rem;">
-                        Start with The Azar Project
-                    </a>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <a href="azar.html" class="btn-primary">Start with Book One</a>
+                        <a href="contact.html" class="btn-ghost">Get in Touch</a>
+                    </div>
                 </div>
 
             </div>
