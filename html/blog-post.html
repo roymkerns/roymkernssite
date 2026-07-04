@@ -94,16 +94,6 @@
             background: var(--text-dim);
         }
 
-        /* ── COVER IMAGE ── */
-        .post-cover {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            object-fit: cover;
-            display: block;
-            margin-bottom: 3rem;
-            border: 1px solid var(--border-sub);
-        }
-
         /* ── POST BODY ── */
         .post-body {
             font-family: var(--font-body);
@@ -468,13 +458,6 @@
                             : ''}
                     </div>
                 </header>
-
-                ${post.coverImageUrl
-                    ? `<img class="post-cover"
-                            src="${post.coverImageUrl}"
-                            alt="${post.title || 'Post cover image'}">`
-                    : ''}
-
                 <div class="post-body">
                     ${post.content || '<p>No content yet.</p>'}
                 </div>

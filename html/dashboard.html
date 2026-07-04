@@ -642,55 +642,7 @@
                 background: var(--purple-light);
             }
 
-        /* Cover image upload in editor */
-        .cover-upload-area {
-            border: 1px dashed var(--text-dim);
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.25s ease;
-            position: relative;
-        }
-
-            .cover-upload-area:hover {
-                border-color: var(--purple);
-            }
-
-            .cover-upload-area input {
-                display: none;
-            }
-
-        .cover-upload-area__label {
-            font-family: var(--font-display);
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            display: block;
-        }
-
-        .cover-preview {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            display: none;
-            margin-top: 0.75rem;
-        }
-
-            .cover-preview.visible {
-                display: block;
-            }
-
         /* Upload progress */
-        .upload-progress-wrap {
-            display: none;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-            .upload-progress-wrap.visible {
-                display: flex;
-            }
 
         .upload-progress-bar-bg {
             height: 3px;
@@ -1142,30 +1094,6 @@
                                     </datalist>
                                 </div>
                             </div>
-
-                            <!-- Cover image -->
-                            <div class="editor-sidebar-block">
-                                <p class="editor-sidebar-block__title">Cover Image</p>
-                                <div class="cover-upload-area" id="blogCoverUploadArea">
-                                    <input type="file" id="blogCoverFile" accept="image/*">
-                                    <span class="cover-upload-area__label">
-                                        Click to upload<br>
-                                        <span style="color:var(--text-dim); font-size:0.55rem;">Max 3MB</span>
-                                    </span>
-                                    <img class="cover-preview" id="blogCoverPreview" alt="Cover preview">
-                                </div>
-                                <div class="upload-progress-wrap" id="blogUploadProgress">
-                                    <div class="upload-progress-bar-bg">
-                                        <div class="upload-progress-bar" id="blogProgressBar"></div>
-                                    </div>
-                                    <span class="upload-progress-label" id="blogProgressLabel">Uploading…</span>
-                                </div>
-                                <button class="editor-delete-btn" id="removeCoverBtn"
-                                        style="display:none; margin-top:0.5rem;">
-                                    Remove Cover
-                                </button>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -1213,7 +1141,7 @@
     <script src="../js/script.js"></script>
 
     <script type="module">
-        import { auth, db, storage } from '../js/firebase-config.js';
+        import { auth, db } from '../js/firebase-config.js';
         import {
             onAuthStateChanged, signOut
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -1221,9 +1149,6 @@
             collection, doc, addDoc, getDoc, getDocs,
             updateDoc, deleteDoc, query, orderBy, serverTimestamp
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import {
-            ref, uploadBytesResumable, getDownloadURL, deleteObject
-        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
         /* ═══════════════════════════════════
            AUTH GUARD
@@ -1409,34 +1334,21 @@
            BLOG — EDITOR
            ═══════════════════════════════════ */
         let editingPostId   = null;   // null = new post
-        let coverImageUrl   = '';
-        let coverImagePath  = '';
 
         function openNewEditor() {
             editingPostId  = null;
-            coverImageUrl  = '';
-            coverImagePath = '';
-
             document.getElementById('postTitle').value     = '';
             document.getElementById('postExcerpt').value   = '';
             document.getElementById('postContent').value   = '';
             document.getElementById('postCategory').value  = '';
             document.getElementById('postPublished').checked = false;
             document.getElementById('publishLabel').textContent = 'Draft';
-            document.getElementById('blogCoverPreview').classList.remove('visible');
-            document.getElementById('blogCoverPreview').src = '';
-            document.getElementById('removeCoverBtn').style.display = 'none';
             document.getElementById('editorDelete').style.display  = 'none';
-            document.getElementById('blogUploadProgress').classList.remove('visible');
-
             showPanel('editor');
         }
 
         function openEditor(post) {
             editingPostId  = post.id;
-            coverImageUrl  = post.coverImageUrl  || '';
-            coverImagePath = post.coverImagePath || '';
-
             document.getElementById('postTitle').value     = post.title    || '';
             document.getElementById('postExcerpt').value   = post.excerpt  || '';
             document.getElementById('postContent').value   = post.content  || '';
@@ -1444,17 +1356,6 @@
             document.getElementById('postPublished').checked = !!post.published;
             document.getElementById('publishLabel').textContent = post.published ? 'Published' : 'Draft';
             document.getElementById('editorDelete').style.display = 'block';
-            document.getElementById('blogUploadProgress').classList.remove('visible');
-
-            if (coverImageUrl) {
-                const preview = document.getElementById('blogCoverPreview');
-                preview.src = coverImageUrl;
-                preview.classList.add('visible');
-                document.getElementById('removeCoverBtn').style.display = 'block';
-            } else {
-                document.getElementById('blogCoverPreview').classList.remove('visible');
-                document.getElementById('removeCoverBtn').style.display = 'none';
-            }
         }
 
         // Back button
@@ -1530,62 +1431,6 @@
             document.getElementById('previewModal').style.display = 'block';
         }
 
-        // ── COVER IMAGE UPLOAD ──
-        const coverUploadArea = document.getElementById('blogCoverUploadArea');
-        const coverFileInput  = document.getElementById('blogCoverFile');
-        const coverPreview    = document.getElementById('blogCoverPreview');
-        const progressWrap    = document.getElementById('blogUploadProgress');
-        const progressBar     = document.getElementById('blogProgressBar');
-        const progressLabel   = document.getElementById('blogProgressLabel');
-
-        coverUploadArea.addEventListener('click', () => coverFileInput.click());
-        coverFileInput.addEventListener('change', () => {
-            const file = coverFileInput.files[0];
-            if (!file) return;
-            if (file.size > 3 * 1024 * 1024) {
-                window.RKUtils?.showToast('Image must be under 3MB', 'error');
-                return;
-            }
-            uploadCoverImage(file);
-        });
-
-        function uploadCoverImage(file) {
-            const path = `blog-images/${Date.now()}_${file.name}`;
-            const task = uploadBytesResumable(ref(storage, path), file);
-
-            progressWrap.classList.add('visible');
-            progressBar.style.width = '0%';
-
-            task.on('state_changed',
-                snap => {
-                    const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
-                    progressBar.style.width = pct + '%';
-                    progressLabel.textContent = `Uploading… ${pct}%`;
-                },
-                err => {
-                    progressWrap.classList.remove('visible');
-                    window.RKUtils?.showToast('Upload failed: ' + err.message, 'error');
-                },
-                async () => {
-                    coverImageUrl  = await getDownloadURL(task.snapshot.ref);
-                    coverImagePath = path;
-                    progressWrap.classList.remove('visible');
-                    coverPreview.src = coverImageUrl;
-                    coverPreview.classList.add('visible');
-                    document.getElementById('removeCoverBtn').style.display = 'block';
-                    window.RKUtils?.showToast('Cover uploaded');
-                }
-            );
-        }
-
-        document.getElementById('removeCoverBtn').addEventListener('click', () => {
-            coverImageUrl  = '';
-            coverImagePath = '';
-            coverPreview.classList.remove('visible');
-            coverPreview.src = '';
-            document.getElementById('removeCoverBtn').style.display = 'none';
-        });
-
         // ── SAVE POST ──
         document.getElementById('editorSave').addEventListener('click', savePost);
 
@@ -1608,7 +1453,6 @@
 
             const payload = {
                 title, excerpt, content, category, published,
-                coverImageUrl, coverImagePath,
                 updatedAt: serverTimestamp(),
             };
 
@@ -1638,9 +1482,7 @@
 
             try {
                 await deleteDoc(doc(db, 'blog', editingPostId));
-                if (coverImagePath) {
-                    try { await deleteObject(ref(storage, coverImagePath)); } catch {}
-                }
+
                 window.RKUtils?.showToast('Post deleted');
                 showPanel('blog');
                 loadBlogList();

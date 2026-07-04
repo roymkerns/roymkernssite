@@ -89,42 +89,7 @@
                 box-shadow: 0 12px 40px rgba(0,0,0,0.4);
             }
 
-        .blog-card__img {
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            background: var(--bg-surface);
-            position: relative;
-        }
 
-            .blog-card__img img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-                transition: transform 0.5s ease;
-            }
-
-        .blog-card:hover .blog-card__img img {
-            transform: scale(1.04);
-        }
-
-        /* Placeholder when no cover image */
-        .blog-card__img-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
-        }
-
-            .blog-card__img-placeholder span {
-                font-family: var(--font-display);
-                font-size: 0.6rem;
-                letter-spacing: 0.35em;
-                color: var(--text-dim);
-                text-transform: uppercase;
-            }
 
         .blog-card__body {
             flex: 1;
@@ -325,7 +290,7 @@
 
             <!-- PAGE HEADER -->
             <header class="blog-header reveal">
-               
+
                 <h1 class="section-title">Blog</h1>
                 <div class="title-line"></div>
                 <p class="section-intro" style="margin-top:1.5rem; max-width:560px;">
@@ -615,12 +580,7 @@
                 card.setAttribute('aria-label', post.title || 'Blog post');
 
                 card.innerHTML = `
-                    <div class="blog-card__img">
-                        ${post.coverImageUrl
-                            ? `<img src="${post.coverImageUrl}" alt="${post.title || ''}" loading="lazy">`
-                            : `<div class="blog-card__img-placeholder">
-                                   <span>No Image</span>
-                               </div>`
+                    `
                         }
                     </div>
                     <div class="blog-card__body">
