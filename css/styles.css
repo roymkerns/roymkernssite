@@ -1169,3 +1169,152 @@ footer {
     clip: rect(0,0,0,0);
     border: 0;
 }
+
+/* ── NAV DROPDOWN ── */
+.nav-dropdown {
+    position: relative;
+}
+
+    .nav-dropdown > a {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        /* Suppress the ::after underline animation that was
+           rendering as a coloured diagonal slash */
+        .nav-dropdown > a::after {
+            display: none !important;
+        }
+
+        /* Chevron uses ::before — no clash with ::after underline */
+        .nav-dropdown > a::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-right: 1.5px solid currentColor;
+            border-bottom: 1.5px solid currentColor;
+            transform: rotate(45deg) translateY(-2px);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+            opacity: 0.65;
+        }
+
+    .nav-dropdown:hover > a::before,
+    .nav-dropdown.open > a::before {
+        transform: rotate(-135deg) translateY(2px);
+    }
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* flush to nav bottom */
+    left: 50%;
+    min-width: 220px;
+    background: rgba(5, 5, 10, 0.97);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    /* padding-top creates an invisible bridge the
+               mouse can cross without losing hover state */
+    padding-top: 10px;
+    transform: translateX(-50%) translateY(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 600;
+}
+
+    /* Actual visible panel sits below the bridge */
+    .dropdown-menu::after {
+        content: '';
+        position: absolute;
+        inset: 10px 0 0 0;
+        background: rgba(5, 5, 10, 0.97);
+        border: 1px solid var(--border);
+        z-index: -1;
+    }
+
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown.open .dropdown-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 0.8rem 1.25rem;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-bottom: 1px solid var(--border-sub);
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+}
+
+    .dropdown-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Kill nav underline on dropdown items */
+    .dropdown-item::after {
+        display: none !important;
+    }
+
+    .dropdown-item::before {
+        display: none !important;
+    }
+
+    .dropdown-item:hover {
+        background: var(--bg-elevated);
+        color: var(--purple-light);
+    }
+
+.dropdown-item--pending {
+    color: var(--text-dim);
+}
+
+    .dropdown-item--pending:hover {
+        color: var(--text-muted);
+    }
+
+/* ── MOBILE DROPDOWN ── */
+@media (max-width: 640px) {
+    .dropdown-menu {
+        position: static;
+        transform: none !important;
+        opacity: 1;
+        pointer-events: auto;
+        border: none;
+        border-top: 1px solid var(--border-sub);
+        backdrop-filter: none;
+        background: rgba(5, 5, 10, 0.6);
+        display: none;
+        min-width: 0;
+        width: 100%;
+        padding-top: 0;
+    }
+
+        .dropdown-menu::after {
+            display: none;
+        }
+
+    .nav-dropdown > a::after {
+        display: none !important;
+    }
+
+    .nav-dropdown.open .dropdown-menu {
+        display: flex;
+    }
+
+    .nav-dropdown > a {
+        justify-content: center;
+    }
+}
