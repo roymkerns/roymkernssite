@@ -1378,11 +1378,17 @@
         const content = document.getElementById('profileContent');
         const stampClass = p.stamp === 'CLASSIFIED' ? 'profile-file-header__stamp--classified' : '';
 
+        // Academy-category profiles get the Matsuba ESP Academy letterhead instead of Xerxes LLC
+        const isAcademy   = p.category === 'Academy';
+        const orgName     = isAcademy ? 'MATSUBA ESP ACADEMY' : 'XERXES LLC';
+        const orgSubtitle = 'EMPLOYEE PROFILES';
+        const fileLabel   = 'PERSONNEL FILE';
+
         content.innerHTML = `
             <div class="profile-file-header">
                 <div>
-                    <div class="file-header__org">XERXES LLC // EMPLOYEE PROFILES</div>
-                    <div class="file-header__title">PERSONNEL FILE — ${p.fileId}</div>
+                    <div class="file-header__org">${orgName} // ${orgSubtitle}</div>
+                    <div class="file-header__title">${fileLabel} — ${p.fileId}</div>
                 </div>
                 <div class="file-header__stamp ${stampClass}">${p.stamp}</div>
             </div>
