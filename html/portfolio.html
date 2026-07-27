@@ -1246,6 +1246,20 @@
             category: 'Academy',
             images: ['../images/conrad_prof.jpg', '../images/conrad-1.jpg'],
             alt: 'Conrad Krawczyk'
+        },
+
+        {
+            type: 'profile',
+            category: 'Exolink',
+            images: ['../images/Jericho_porfile-1.jpg'], // add more: do the array code
+            alt: 'ExoLink Employee Jericho Stern'
+        },
+
+        {
+            type: 'profile',
+            category: 'Exolink',
+            images: ['../images/amalthea_choi-1.jpg'],
+            alt: 'ExoLink Auditor, Amalthea Choi'
         }
 
 
@@ -1380,7 +1394,8 @@
 
         // Academy-category profiles get the Matsuba ESP Academy letterhead instead of Xerxes LLC
         const isAcademy   = p.category === 'Academy';
-        const orgName     = isAcademy ? 'MATSUBA ESP ACADEMY' : 'XERXES LLC';
+        const isExolink   = p.category === 'Exolink';
+        const orgName     = isAcademy ? 'MATSUBA ESP ACADEMY' : isExolink ? 'EXOLINK' : 'XERXES LLC';
         const orgSubtitle = 'EMPLOYEE PROFILES';
         const fileLabel   = 'PERSONNEL FILE';
 
